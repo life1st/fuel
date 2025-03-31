@@ -13,7 +13,7 @@ const TabBar = () => {
     { icon: SetOutline, label: '设置', path: '/preference' }
   ]
 
-  return (      
+  return (
       <div className='tab-bar'>
         <div className="float-btn-gro">
           <FloatButton

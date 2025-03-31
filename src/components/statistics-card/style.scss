@@ -39,14 +39,20 @@
       .statistics-item {
         margin-bottom: 8px;
 
+        .oil {
+          color: #1677ff;
+        }
+
+        .charge {
+          color: #52c41a;
+        }
+
         .label {
           font-size: 13px;
-          .oil {
-            color: #1677ff;
-          }
-          .charge {
-            color: #52c41a;
-          }
+        }
+
+        .mid-label {
+          margin-right: auto;
         }
 
         .value {
@@ -55,4 +61,4 @@
       }
     }
   }
-} 
+}

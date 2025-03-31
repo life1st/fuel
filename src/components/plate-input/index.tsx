@@ -85,7 +85,7 @@ const PlateInput: FC<PlateInputProps> = ({
           value={plate}
           onChange={handleChange}
           placeholder={placeholder}
-          disabled={false}
+          disabled={disabled}
           className={cls("plate-input-field", {
             empty: plate.length === 0,
           })}

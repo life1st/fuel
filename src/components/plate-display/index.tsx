@@ -16,17 +16,11 @@ const PlateDisplay: FC<PlateDisplayProps> = ({
     if (!plate) return { formatted: '', isNewEnergy: false }
     const plateWithoutSpace = plate.replace(/\s/g, '')
     const isNewEnergy = plateWithoutSpace.length === 8 // 新能源车牌总长度为8位（2位省份+1位字母+5位数字）
-    
-    if (plateWithoutSpace.length > 2) {
-      return {
-        formatted: plateWithoutSpace.slice(0, 2) + '-' + plateWithoutSpace.slice(2),
-        isNewEnergy
-      }
-    }
-    
+    const formatted = plateWithoutSpace.slice(0, 2) + '-' + plateWithoutSpace.slice(2)
+
     return {
-      formatted: plateWithoutSpace,
-      isNewEnergy: false
+      formatted,
+      isNewEnergy
     }
   }
 
@@ -38,7 +32,7 @@ const PlateDisplay: FC<PlateDisplayProps> = ({
       'plate-display--small': size === 'small',
       'plate-display--large': size === 'large'
     })}>
-      <div className="plate-display__content">
+      <div className="plate-display__content" aria-label={`${formatted}`}>
         {formatted.split('').map((char, index) => (
           <div 
             key={index}
@@ -46,11 +40,12 @@ const PlateDisplay: FC<PlateDisplayProps> = ({
               'plate-display__char--space': char === '-',
               'electric': isNewEnergy,
             })}
+            aria-hidden={char === '-' && isNewEnergy ? 'true' : 'false'}
           >
             {char === '-' && isNewEnergy ? '' : char}
           </div>
         ))}
-        {!isNewEnergy && <div className={cls('plate-display__char_1')} />}
+        {!isNewEnergy && <div className={cls('plate-display__char_1')} aria-hidden="true" />}
       </div>
     </div>
   )
