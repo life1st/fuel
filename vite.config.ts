@@ -39,7 +39,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
         cleanupOutdatedCaches: true,
-        navigateFallback: '/fuel/index.html',
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
