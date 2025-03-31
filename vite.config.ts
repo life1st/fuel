@@ -39,7 +39,6 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
         cleanupOutdatedCaches: true,
-        sourcemap: true,
         navigateFallback: '/fuel/index.html',
         runtimeCaching: [
           {
@@ -101,5 +100,15 @@ export default defineConfig({
       provider: 'istanbul',
       reporter: ['text', 'html'],
     },
+  },
+  build: {
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
   },
 })
