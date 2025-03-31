@@ -45,6 +45,7 @@
     "typescript-eslint": "^8.26.1",
     "vite": "^6.2.2",
     "vite-bundle-analyzer": "^0.18.0",
+    "vite-plugin-pwa": "^0.21.2",
     "vitest": "^3.0.9"
   },
   "packageManager": "pnpm@10.2.0+sha1.5d36c5a1aae9a628a924ee9982f013ad202e1051"
