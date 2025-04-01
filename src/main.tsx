@@ -21,7 +21,25 @@ const darkMode = async () => {
   appendMeta()
 }
 
-void darkMode();
+// 使用 requestIdleCallback 延迟加载
+const initDarkMode = () => {
+  const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+      if (entry.name === 'first-contentful-paint') {
+        // FCP 完成后，在空闲时间执行 darkMode
+        requestIdleCallback(() => {
+          void darkMode()
+        }, { timeout: 2000 }) // 设置 2 秒超时，确保最终会执行
+        observer.disconnect()
+      }
+    }
+  })
+
+  // 观察 FCP
+  observer.observe({ entryTypes: ['paint'] })
+}
+
+initDarkMode()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
