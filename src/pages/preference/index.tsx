@@ -153,7 +153,7 @@ const Preference: FC = () => {
       </div>
       {handleImport()}
       <div className="version-info">
-        <span>当前版本：{pkgJson.version}</span>
+        当前版本：{pkgJson.version}
       </div>
     </div>
   );

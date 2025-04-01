@@ -1,0 +1,40 @@
+.top-banner {
+  position: fixed;
+  top: 4px;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+  border-radius: 20px;
+
+  &.visible {
+    transform: translateX(-50%) translateY(1%);
+  }
+
+  &.hidden {
+    transform: translateX(-50%) translateY(-120%);
+  }
+
+  &-content {
+    padding: 4px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  &-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 16px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+} 
