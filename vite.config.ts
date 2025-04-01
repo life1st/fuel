@@ -37,13 +37,22 @@ export default defineConfig({
       },
       strategies: 'generateSW',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
         cleanupOutdatedCaches: true,
         navigateFallback: '/fuel/index.html',
         runtimeCaching: [
           {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'html-cache',
+              cacheableResponse: {
+                statuses: [200]
+              }
+            }
+          },
+          {
             urlPattern: ({ request }) => request.destination === 'script' || request.destination === 'style',
-            handler: 'NetworkFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'assets-cache',
               cacheableResponse: {
@@ -108,6 +117,18 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (!id.includes('node_modules')) {
+            console.log("id-------------",id);
+          } else {
+            // return 'vendor'
+          }
+        },
+        chunkFileNames: 'assets/[name][hash].js',
       }
     }
   },
