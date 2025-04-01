@@ -6,6 +6,7 @@ import Navigate from "@/components/navigate";
 import useRecordStore, { Record } from "@/store/recordStore";
 import useSettingStore from "@/store/setting-store";
 import SyncSetting from "@/components/sync-setting";
+import pkgJson from '@/../package.json'
 import "./style.scss";
 
 const Preference: FC = () => {
@@ -151,6 +152,9 @@ const Preference: FC = () => {
         </List>
       </div>
       {handleImport()}
+      <div className="version-info">
+        <span>当前版本：{pkgJson.version}</span>
+      </div>
     </div>
   );
 };
