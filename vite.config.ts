@@ -119,17 +119,5 @@ export default defineConfig({
         drop_debugger: true
       }
     },
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (!id.includes('node_modules')) {
-            console.log("id-------------",id);
-          } else {
-            // return 'vendor'
-          }
-        },
-        chunkFileNames: 'assets/[name][hash].js',
-      }
-    }
   },
 })
