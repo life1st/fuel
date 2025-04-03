@@ -1,59 +1,31 @@
-name: CI
+name: test & upload coverage
 
-on:
+on: 
   push:
-    branches:
-      - feat/ci
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
+    name: Run tests and collect coverage
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          fetch-depth: 2
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
 
       - name: Install dependencies
-        run: corepack enable && pnpm i
+        run: npm install
 
       - name: Run tests
-        run: pnpm test:coverage
+        run: npx vitest run --coverage
 
-      - name: Check coverage report
-        run: ls -l # 列出 coverage 目录中的文件
-
-      - name: Upload coverage report
-        uses: actions/download-artifact@v4
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          name: coverage-report
-          path: ./coverage
-      - name: Generate coverage summary
-        id: coverage_summary
-        run: |
-          # 读取 coverage/index.html 文件并提取数据
-          coverage_file="coverage/index.html"
-          total_statements=$(grep -oP '(?<=Statements</span>)[^<]+' $coverage_file | tr -d ' ')
-          total_branches=$(grep -oP '(?<=Branches</span>)[^<]+' $coverage_file | tr -d ' ')
-          total_functions=$(grep -oP '(?<=Functions</span>)[^<]+' $coverage_file | tr -d ' ')
-          total_lines=$(grep -oP '(?<=Lines</span>)[^<]+' $coverage_file | tr -d ' ')
-
-          # 生成评论内容
-          echo "## 测试覆盖率报告" > summary.md
-          echo "- **总语句覆盖率**: $total_statements" >> summary.md
-          echo "- **总分支覆盖率**: $total_branches" >> summary.md
-          echo "- **总函数覆盖率**: $total_functions" >> summary.md
-          echo "- **总行覆盖率**: $total_lines" >> summary.md
-          echo "::set-output name=summary::$(cat summary.md)"
-
-      - name: Comment on commit with coverage summary
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }} # 如果是 PR 触发的
-          body: ${{ steps.coverage_summary.outputs.summary }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
