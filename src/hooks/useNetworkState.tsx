@@ -10,7 +10,7 @@ export const useNetworkState = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-      const response = await fetch('/fuel/favicon.ico', {
+      const response = await fetch('/fuel/icon.svg', {
         method: 'HEAD',
         signal: controller.signal,
         cache: 'no-store'

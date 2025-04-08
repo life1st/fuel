@@ -3,6 +3,7 @@ import F2, { LegendItem } from "@antv/f2";
 import dayjs from 'dayjs'
 import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
+import PowerNums from './components/power-nums'
 import demoData from '@/utils/demoData.json'
 import './style.scss'
 
@@ -14,7 +15,6 @@ const ChargingChart = ({
   width: number;
 }) => {
   const chartId = useRef(String(Date.now()));
-  const [isDark, setDark] = useState(false);
 
   const chargingData = useMemo(() => {
     const result: {
@@ -187,6 +187,8 @@ const ChartPage = () => {
         <p className='chart-legend'>充电记录</p>
         <CostPer100KMChart recordList={chartData} width={width} />
         <p className='chart-legend'>每百公里平均费用</p>
+        <PowerNums width={width} />
+        <p className='chart-legend'>充电加油记录</p>
       </div>
     </div>
   )
