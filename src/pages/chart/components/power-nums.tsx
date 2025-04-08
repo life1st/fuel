@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import F2 from '@antv/f2'
+import F2Base from './f2-base'
 import dayjs from 'dayjs'
 import useRecordStore from '@/store/recordStore'
 
@@ -21,7 +22,7 @@ const PowerNums = ({
 }) => {
   const { recordList } = useRecordStore()
 
-  const chartId = useRef(String(Date.now()));
+  const chartId = "power-chart"
   
   const powerData = useMemo(() => {
     const chargingResult: PowerData[] = []
@@ -62,9 +63,42 @@ const PowerNums = ({
     })
   }, [recordList])
 
+  const mileageData = useMemo(() => {    
+    let mileageList = recordList.reduce((acc, item) => {
+      const date = dayjs(item.date).format('YY/MM')
+      if (acc.length === 0) {
+        acc.push([{ date, value: item.kilometerOfDisplay }])
+      } else {
+        let prevDate = acc[acc.length - 1][0].date
+        if (date === prevDate) {
+          acc[acc.length - 1].push({ date, value: item.kilometerOfDisplay })
+        } else {
+          acc.push([{ date, value: item.kilometerOfDisplay }])
+        }
+      }
+      return acc
+    }, [] as any[])
+    
+    return mileageList.map((list, index) => {
+      if (index === 0) {
+        return {
+          date: list[0].date,
+          value: Number(list[list.length - 1].value),
+        }
+      } else {
+        const prevList = mileageList[index - 1]
+        const startMileage = prevList[prevList.length - 1].value
+        return {
+          date: list[0].date,
+          value: list[list.length - 1].value - startMileage,
+        }
+      }
+    })
+  }, [recordList])
+
   const renderChart = () => {
     const chart = new F2.Chart({
-      id: chartId.current,
+      id: chartId,
       pixelRatio: window.devicePixelRatio, // 指定分辨率
     });
     chart.source(powerData);
@@ -75,16 +109,12 @@ const PowerNums = ({
     chart.render();
   }
 
-  useEffect(() => {
-    if (width) {
-      renderChart();
-    }
-  }, [width]);
-
   return (
-    <div className="power-chart chart-container">
-      <canvas id={chartId.current} width={width || 100} height="260"></canvas>
-    </div>
+    <F2Base
+      chartId={chartId}
+      width={width}
+      renderChart={renderChart}
+    />
   );
 }
 
