@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
+import MonthlyMileage from './components/monthly-mileage'
 import demoData from '@/utils/demoData.json'
 import './style.scss'
 
@@ -14,7 +15,7 @@ const ChargingChart = ({
   recordList: Record[];
   width: number;
 }) => {
-  const chartId = useRef(String(Date.now()));
+  const chartId = 'basic-chart'
 
   const chargingData = useMemo(() => {
     const result: {
@@ -49,7 +50,7 @@ const ChargingChart = ({
 
   const renderChart = () => {
     const chart = new F2.Chart({
-      id: chartId.current,
+      id: chartId,
       pixelRatio: window.devicePixelRatio, // 指定分辨率
     });
     chart.source(chargingData, {
@@ -94,7 +95,7 @@ const ChargingChart = ({
 
   return (
     <div className="basic-chart chart-container">
-      <canvas id={chartId.current} width={width || 100} height="260"></canvas>
+      <canvas id={chartId} width={width || 100} height="260"></canvas>
     </div>
   );
 };
@@ -189,6 +190,8 @@ const ChartPage = () => {
         <p className='chart-legend'>每百公里平均费用</p>
         <PowerNums width={width} />
         <p className='chart-legend'>充电加油记录</p>
+        <MonthlyMileage width={width} />
+        <p className='chart-legend'>每月行驶里程</p>
       </div>
     </div>
   )
