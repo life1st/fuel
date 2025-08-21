@@ -17,7 +17,7 @@ export interface Record {
   electric: number;
   cost: number;
   kilometerOfDisplay: number;
-  date: number;
+  date: number | string;
 }
 
 const useRecordStore = create<RecordState>()(
