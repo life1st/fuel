@@ -1,0 +1,136 @@
+.filter-trigger-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-toggle {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  color: #666;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  
+  &.active {
+    color: #1677ff;
+    background-color: rgba(22, 119, 255, 0.1);
+  }
+  
+  &.has-filters {
+    color: #1677ff;
+    background-color: rgba(22, 119, 255, 0.1);
+  }
+  
+  .filter-badge {
+    width: 8px;
+    height: 8px;
+    background-color: #ff4d4f;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}
+
+.filter-reset-button {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: #ff4d4f;
+  background-color: rgba(255, 77, 79, 0.1);
+}
+
+.filter-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 400px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  
+  .filter-section {
+    margin-bottom: 16px;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .filter-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+  }
+  
+  .filter-selector {
+    width: 100%;
+    
+    &.charging {
+      .adm-selector-item-active {
+        .adm-selector-check-mark-wrapper {
+          border-color: #52c41a;
+          border-top: solid 8px transparent;
+          border-left: solid 8px transparent;
+        }
+        
+        color: #52c41a;
+        background-color: rgba(82, 196, 26, 0.1);
+      }
+    }
+    
+    &.refueling {
+      .adm-selector-item-active {
+        .adm-selector-check-mark-wrapper {
+          border-color: #1677ff;
+          border-top: solid 8px transparent;
+          border-left: solid 8px transparent;
+        }
+        
+        color: #1677ff;
+        background-color: rgba(22, 119, 255, 0.1);
+      }
+    }
+    
+    &.all {
+      .adm-selector-item-active {
+        .adm-selector-check-mark-wrapper {
+          border-color: #999;
+          border-top: solid 8px transparent;
+          border-left: solid 8px transparent;
+        }
+      }
+    }
+  }
+  
+  .month-filter {
+    display: flex;
+    align-items: center;
+    
+    .month-button {
+      flex: 1;
+    }
+    
+    .clear-button {
+      margin-left: 8px;
+      color: #999;
+    }
+  }
+  
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+}

@@ -5,6 +5,34 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+
+  .record-form-item-selector {
+    &.charging {
+      .adm-selector-item-active {
+        .adm-selector-check-mark-wrapper {
+          border-color: #52c41a;
+          border-top: solid 8px transparent;
+          border-left: solid 8px transparent;
+        }
+    
+        color: #52c41a;
+        background-color: rgba(82, 196, 26, 0.1);
+      }
+    }
+
+    &.refueling {
+      .adm-selector-item-active {
+        .adm-selector-check-mark-wrapper {
+            border-color: #1677ff;
+            border-top: solid 8px transparent;
+            border-left: solid 8px transparent;
+          }
+
+          color: #1677ff;
+          background-color: rgba(22, 119, 255, 0.1);
+      }
+    }
+  }
   
   .record-header {
     display: flex;

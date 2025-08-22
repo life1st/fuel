@@ -127,6 +127,10 @@ const Record: FC = () => {
               <div className="record-form-item-input">
                 {item.dataType === "select" ? (
                   <Selector
+                    className={cls("record-form-item-selector", {
+                      'charging': item.value === 'charging',
+                      'refueling': item.value === 'refueling',
+                    })}
                     options={item.data!.options}
                     value={[item.value as string]}
                     onChange={(array) => {
