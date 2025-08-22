@@ -18,11 +18,14 @@ const Preference: FC = () => {
 
   const handleExport = () => {
     const data = JSON.stringify(recordList);
+    const lastDate = dayjs(recordList.sort((a, b) =>
+      dayjs(b.date).isAfter(dayjs(a.date)) ? 1 : -1
+    )[0]?.date);
     const blob = new Blob([data], { type: "application/json;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.href = url;
-    link.download = `${vehicleId}_${dayjs().format("YY/MM/DD-HH:mm")}.json`;
+    link.download = `${vehicleId}_${lastDate.format("YYYY-MM-DD_HH:mm")}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
