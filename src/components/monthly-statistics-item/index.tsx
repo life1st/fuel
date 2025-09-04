@@ -48,6 +48,16 @@ const MonthlyStatisticsItem: FC<MonthlyStatisticsItemProps> = (props) => {
     return Number((refuelingCost + chargingCost).toFixed(2));
   }, [refuelingCost, chargingCost]);
 
+  // 计算等效平均能耗：(耗油量 + 等效耗油量) / 月里程
+  const equivalentAverageConsumption = useMemo(() => {
+    if (!mileage || mileage === 0) return 0;
+    // 计算等效耗油量：耗电量/3.5
+    const equivalentFuelConsumption = Number((chargingAmount / 3.5).toFixed(2));
+    const totalEquivalentFuel = refuelingAmount + equivalentFuelConsumption;
+
+    return Number((totalEquivalentFuel / mileage * 100).toFixed(2)); // 转换为L/100km
+  }, [refuelingAmount, chargingAmount, mileage]);
+
   // 使用 dayjs 格式化月份显示
   const formatMonth = (monthStr: string) => {
     return dayjs(monthStr).format('YYYY年MM月');
@@ -59,8 +69,13 @@ const MonthlyStatisticsItem: FC<MonthlyStatisticsItemProps> = (props) => {
         <div className="statistics-header">
           <span className="month-label">{formatMonth(month)}</span>
           <div className="mileage-section">
-            <span className="mileage-label">里程：</span>
+            <span className='mileage-label'>总计</span>
             <span className="mileage-value">{mileage || '- '}km</span>
+            <span className='mileage-label'>平均</span>
+            <span className="consumption-value">
+              <span className="number">{equivalentAverageConsumption || '- '}</span>
+              <span className="unit">L/100km</span>
+            </span>
           </div>
         </div>
         
