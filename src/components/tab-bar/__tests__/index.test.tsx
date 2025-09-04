@@ -10,7 +10,7 @@ describe('标签栏组件', () => {
     
     expect(screen.getByText('历史')).toBeInTheDocument()
     expect(screen.getByText('统计')).toBeInTheDocument()
-    expect(screen.getByText('设置')).toBeInTheDocument()
+    expect(screen.getByText('偏好')).toBeInTheDocument()
   })
 
   it('点击标签应该跳转到对应路由', () => {

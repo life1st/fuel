@@ -21,7 +21,8 @@ describe('MonthlyStatisticsItem', () => {
     render(<MonthlyStatisticsItem {...defaultProps} />)
     
     expect(screen.getByText('2024年01月')).toBeInTheDocument()
-    expect(screen.getByText('里程：')).toBeInTheDocument()
+    expect(screen.getByText('总计')).toBeInTheDocument()
+    expect(screen.getByText('平均')).toBeInTheDocument()
     expect(screen.getByText('1250km')).toBeInTheDocument()
     expect(screen.getByText('234.56')).toBeInTheDocument()
     expect(screen.getByText('222.22')).toBeInTheDocument()
