@@ -18,10 +18,10 @@
 ## 应用截图
 
 <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; align-items: center;">
-  <img src="./docs/assets/home.png" alt="首页" width="200" />
-  <img src="./docs/assets/chart.png" alt="图表" width="200" />
+  <img src="./docs/assets/home.png" alt="历史" width="200" />
+  <img src="./docs/assets/chart.png" alt="统计" width="200" />
   <img src="./docs/assets/record.png" alt="记录" width="200" />
-  <img src="./docs/assets/settings.png" alt="设置" width="200" />
+  <img src="./docs/assets/settings.png" alt="偏好" width="200" />
 </div>
 
 ## 快速开始

@@ -78,10 +78,10 @@ pnpm preview
 
 使用 React Router 进行路由管理，主要路由包括：
 
-- `/`: 首页
-- `/chart`: 统计图表
-- `/settings`: 设置页面
-- `/record/:id`: 记录详情
+- `/`: 历史
+- `/chart`: 统计
+- `/settings`: 设置
+- `/record/:id`: 记录
 
 ## 组件开发规范
 

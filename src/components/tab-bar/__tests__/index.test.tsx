@@ -8,15 +8,15 @@ describe('标签栏组件', () => {
   it('应该渲染所有标签项', () => {
     render(withRouter(<TabBar />))
     
-    expect(screen.getByText('首页')).toBeInTheDocument()
-    expect(screen.getByText('图表')).toBeInTheDocument()
+    expect(screen.getByText('历史')).toBeInTheDocument()
+    expect(screen.getByText('统计')).toBeInTheDocument()
     expect(screen.getByText('设置')).toBeInTheDocument()
   })
 
   it('点击标签应该跳转到对应路由', () => {
     render(withRouter(<TabBar />))
     
-    const chartTab = screen.getByText('图表')
+    const chartTab = screen.getByText('统计')
     fireEvent.click(chartTab)
     
     // 由于我们使用了 BrowserRouter，这里可以检查 URL 是否改变
@@ -31,15 +31,15 @@ describe('标签栏组件', () => {
       </MemoryRouter>
     )
 
-    const homeTab = screen.getByText('首页').parentNode
+    const homeTab = screen.getByText('历史').parentNode
     
     expect(homeTab).toHaveClass('active')
 
     // 测试其他标签的激活状态
-    // 例如，模拟导航到图表页面
-    fireEvent.click(screen.getByText('图表'))
+    // 例如，模拟导航到统计页面
+    fireEvent.click(screen.getByText('统计'))
 
-    const chartTab = screen.getByText('图表').parentNode
+    const chartTab = screen.getByText('统计').parentNode
     expect(chartTab).toHaveClass('active')
     expect(homeTab).not.toHaveClass('active')
   })

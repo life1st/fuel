@@ -21,7 +21,7 @@ async function takeScreenshots() {
     // 设置设备模拟
     await page.emulate(KnownDevices['iPhone 12 Pro'])
     
-    // 首页截图
+    // 历史页面截图
     await page.goto(`${BASE_URL}/`);
     await wait(2000); // 等待页面加载
     await page.screenshot({
@@ -29,7 +29,7 @@ async function takeScreenshots() {
       fullPage: false, // 只截取视口部分
     });
 
-    // 图表页面截图
+    // 统计页面截图
     await page.goto(`${BASE_URL}/#/chart`);
     await wait(2000); // 等待页面加载
     await page.screenshot({
@@ -37,7 +37,7 @@ async function takeScreenshots() {
       fullPage: false, // 只截取视口部分
     });
 
-    // 设置页面截图
+    // 偏好页面截图
     await page.goto(`${BASE_URL}/#/preference`);
     await wait(2000); // 等待页面加载
     await page.screenshot({
