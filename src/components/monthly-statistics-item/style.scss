@@ -33,21 +33,38 @@
       background: #f5f5f5;
       padding: 4px 8px;
       border-radius: 6px;
-      gap: 4px;
+      gap: 2px;
 
       .mileage-label {
         color: #666;
         font-size: 12px;
+        margin-right: 1px;
       }
 
       .mileage-value {
         color: #333;
         font-size: 14px;
         font-weight: 600;
+        margin-right: 4px;
+      }
+
+      .consumption-value {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        line-height: 1.2;
+        font-size: 11px;
+
+        .number {
+          font-weight: 600;
+        }
+
+        .unit {
+          color: #666;
+          font-size: 9px;
+        }
       }
     }
-
-
   }
 
   .statistics-content {

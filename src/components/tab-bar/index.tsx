@@ -8,9 +8,9 @@ const TabBar = () => {
   const location = useLocation()
 
   const tabs = [
-    { icon: UnorderedListOutline, label: '首页', path: '/' },
-    { icon: HistogramOutline, label: '图表', path: '/chart' },
-    { icon: SetOutline, label: '设置', path: '/preference' }
+    { icon: UnorderedListOutline, label: '历史', path: '/' },
+    { icon: HistogramOutline, label: '统计', path: '/chart' },
+    { icon: SetOutline, label: '偏好', path: '/preference' }
   ]
 
   return (
