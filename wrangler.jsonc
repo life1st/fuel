@@ -1,0 +1,7 @@
+{
+  "name": "fuel",
+  "compatibility_date": "2025-09-05",
+  "assets": {
+     "directory": "./dist"
+  }
+}

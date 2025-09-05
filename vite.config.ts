@@ -17,17 +17,17 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'icons/icon.svg',
+            src: 'icon.svg',
             sizes: '192x192',
             type: 'image/svg',
           },
           {
-            src: 'icons/icon.svg',
+            src: 'icon.svg',
             sizes: '512x512',
             type: 'image/svg',
           },
         ],
-        start_url: '/fuel',
+        start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
       },
@@ -38,7 +38,7 @@ export default defineConfig({
       strategies: 'generateSW',
       workbox: {
         cleanupOutdatedCaches: true,
-        navigateFallback: '/fuel/index.html',
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.mode === 'navigate',
@@ -100,7 +100,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0'
   },
-  base: '/fuel/',
   test: {
     environment: 'jsdom',
     globals: true,
