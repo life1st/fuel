@@ -102,7 +102,9 @@ const PowerNums = ({
       pixelRatio: window.devicePixelRatio, // 指定分辨率
     });
     chart.source(powerData);
-    chart.interval().position('date*value').color('name').adjust({
+    chart.interval().position('date*value').color('name', (val) => {
+      return val === PowerName.Charging ? '#2FC25B' : '#1890FF'
+    }).adjust({
       type: 'dodge',
       marginRatio: 0.05 // 设置分组间柱子的间距
     });
