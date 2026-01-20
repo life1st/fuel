@@ -156,7 +156,7 @@ const Preference: FC = () => {
       </div>
       {handleImport()}
       <div className="version-info">
-        当前版本：{pkgJson.version}
+        {window.location.hostname}©{new Date().getFullYear()} v{pkgJson.version}
       </div>
     </div>
   );
