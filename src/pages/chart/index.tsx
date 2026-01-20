@@ -5,7 +5,6 @@ import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
 import MonthlyMileage from './components/monthly-mileage'
-import demoData from '@/utils/demoData.json'
 import './style.scss'
 
 const ChargingChart = ({
@@ -178,10 +177,9 @@ const ChartPage = () => {
       window.removeEventListener('resize', updateWidth)
     }
   }, [chartRef])
-  const chartData = recordList.length ? recordList : demoData as Record[]
+  const chartData = recordList
   return (
     <div className='chart-page'>
-      { !recordList.length && <div className='demo-data-tip'>DEMO MODE</div> }
       <StatisticsCard />
       <div className='content' ref={chartRef}>
         <ChargingChart recordList={chartData} width={width} />

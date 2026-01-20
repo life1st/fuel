@@ -4,6 +4,9 @@ import type { EnergyType } from "@/utils/types";
 
 interface RecordState {
   recordList: Record[];
+  demoMode: boolean;
+  setDemoMode: (demoMode: boolean) => void;
+  insertDemoData: () => void;
   setRecordData: (data: Record) => void;
   mergeRecordData: (list: Record[]) => void;
   removeRecordById: (id: string) => void;
@@ -24,8 +27,26 @@ const useRecordStore = create<RecordState>()(
   persist(
     (set) => ({
       recordList: [],
+      demoMode: false,
+      setDemoMode: (demoMode: boolean) => {
+        set({ demoMode });
+      },
+      insertDemoData: async () => {
+        const demoData = await import("@/utils/demoData.json");
+        set({
+          recordList: (demoData.default as any[]).map((item) => ({
+            ...item,
+            oil: Number(item.oil),
+            electric: Number(item.electric),
+            cost: Number(item.cost),
+            kilometerOfDisplay: Number(item.kilometerOfDisplay),
+          })) as Record[],
+          demoMode: true,
+        });
+      },
       setRecordData: (data: Record) => {
         set((state) => ({
+          demoMode: false,
           recordList: [
             ...state.recordList,
             {

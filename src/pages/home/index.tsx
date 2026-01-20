@@ -5,15 +5,14 @@ import MonthlyStatisticsItem from '@/components/monthly-statistics-item'
 import Filter from '@/components/filter'
 import useRecordStore from '@/store/recordStore'
 import useFilterStore from '@/store/filterStore'
-import demoDeta from '@/utils/demoData.json'
 import './style.scss'
 
 const Home: FC = () => {
   const { recordList } = useRecordStore()
   const { energyType, month } = useFilterStore()
-  const hasData = recordList?.length > 0
+
   const data = useMemo(() => {
-    const source = hasData ? recordList : demoDeta
+    const source = recordList
     
     // 应用筛选条件
     const filteredData = source.filter(record => {
@@ -106,6 +105,13 @@ const Home: FC = () => {
         currentChargingRecords: [],
         currentMileage: 0,
         lastMonthMileage: 0
+      } as {
+        result: any[],
+        currentMonth: string | null,
+        currentRefuelingRecords: any[],
+        currentChargingRecords: any[],
+        currentMileage: number,
+        lastMonthMileage: number 
       });
 
     // 处理最后一个月的月度统计数据
@@ -124,13 +130,13 @@ const Home: FC = () => {
     }
 
     return energyList.result.reverse(); // 最后反转整个列表，实现时间倒序显示
-  }, [recordList, energyType, month, hasData])
+  }, [recordList, energyType, month])
 
   return (
     <div className="home-container">
       <section className="section">
         <div className="section-header">
-          <h2>补能统计{!hasData && '(DEMO MODE)'}</h2>
+          <h2>补能统计</h2>
           <Filter />
         </div>
         <div className="energy-list">
