@@ -23,20 +23,24 @@ const darkMode = async () => {
 
 // 使用 requestIdleCallback 延迟加载
 const initDarkMode = () => {
-  const observer = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-      if (entry.name === 'first-contentful-paint') {
-        // FCP 完成后，在空闲时间执行 darkMode
+  try {
+    const observer = new PerformanceObserver((list) => {
+      if (list.getEntries().some(e => e.name === 'first-contentful-paint')) {
+        // FCP 完成后（包括之前已经发生的），在空闲时间执行 darkMode
         requestIdleCallback(() => {
           void darkMode()
-        }, { timeout: 2000 }) // 设置 2 秒超时，确保最终会执行
+        }, { timeout: 2000 })
         observer.disconnect()
       }
-    }
-  })
+    })
 
-  // 观察 FCP
-  observer.observe({ entryTypes: ['paint'] })
+    // 观察 FCP，设置 buffered: true。
+    // 这会让 observer 立即收到之前已经发生的 FCP 事件，彻底解决竞态问题。
+    observer.observe({ type: 'paint', buffered: true })
+  } catch (e) {
+    // 降级处理：如果浏览器不支持 PerformanceObserver 或 buffered 参数，则直接执行
+    void darkMode()
+  }
 }
 
 initDarkMode()
