@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Column } from '@ant-design/plots'
+import { Chart, Interval, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
+import Canvas from '@antv/f2-react'
 import dayjs from 'dayjs'
 import { type Record } from '@/store/recordStore'
 
@@ -13,6 +14,9 @@ interface PowerData {
   name: PowerName
   value: number
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AnyCanvas = Canvas as any
 
 const PowerNums = ({ recordList, width }: { recordList: Record[]; width: number }) => {
 
@@ -62,38 +66,37 @@ const PowerNums = ({ recordList, width }: { recordList: Record[]; width: number 
     return new Set(powerData.map((d) => d.date)).size
   }, [powerData])
 
-  const ITEM_WIDTH = 60
-  const chartWidth = useMemo(() => {
-    if (!width || uniqueDateCount === 0) return width
-    return Math.max(width, uniqueDateCount * ITEM_WIDTH)
-  }, [width, uniqueDateCount])
+  if (!width || powerData.length === 0) return null
 
-  const config = {
-    data: powerData,
-    xField: 'date',
-    yField: 'value',
-    colorField: 'name',
-    group: true,
-    width: chartWidth || width || 300,
-    height: 260,
-    autoFit: false,
-    scale: {
-      color: {
-        domain: [PowerName.Charging, PowerName.Oil],
-        range: ['#2FC25B', '#1890FF'],
-      },
-      y: { min: 0, nice: true },
-    },
-    tooltip: {
-      items: [(d: { name: string; value: number }) => ({ name: d.name, value: d.value })],
-    },
-  }
+  const ITEM_WIDTH = 30
+  const displayCount = Math.floor(width / ITEM_WIDTH)
+  const totalCount = uniqueDateCount
+  const end = 1
+  const start = Math.max(0, 1 - displayCount / totalCount)
 
   return (
-    <div className="chart-scroll-wrapper">
-      <div style={{ width: chartWidth }}>
-        <Column {...config} />
-      </div>
+    <div style={{ width: '100%', height: '260px' }}>
+      <AnyCanvas pixelRatio={window.devicePixelRatio}>
+        <Chart data={powerData}>
+          <Axis field="date" tickCount={5} />
+          <Axis field="value" tickCount={5} />
+          <Interval
+            x="date"
+            y="value"
+            color={{
+              field: 'name',
+              range: ['#2FC25B', '#1890FF'],
+            }}
+            adjust="stack"
+          />
+          <Tooltip showItemMarker />
+          <Legend position="top" align="center" />
+          <ScrollBar
+            mode="x"
+            range={[start, end]}
+          />
+        </Chart>
+      </AnyCanvas>
     </div>
   )
 }

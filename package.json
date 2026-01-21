@@ -1,6 +1,6 @@
 {
   "name": "fuel",
-  "version": "1.1.2",
+  "version": "1.2.0-beta",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@ant-design/plots": "^2.6.8",
-    "@antv/f2": "^3",
+    "@antv/f2": "^5.14.0",
+    "@antv/f2-react": "^5.14.0",
     "antd-mobile": "^5.39.0",
     "antd-mobile-icons": "^0.3.0",
     "axios": "^1.8.3",

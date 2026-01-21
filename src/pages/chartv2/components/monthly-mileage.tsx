@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Column } from '@ant-design/plots'
+import { Chart, Interval, Axis, Tooltip, ScrollBar } from '@antv/f2'
+import F2Canvas from '@antv/f2-react'
 import dayjs from 'dayjs'
 import { type Record } from '@/store/recordStore'
 
@@ -40,41 +41,32 @@ const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: nu
     })
   }, [recordList])
 
-  const ITEM_WIDTH = 20
-  const chartWidth = useMemo(() => {
-    if (!width || mileageData.length === 0) return width
-    return Math.max(width, mileageData.length * ITEM_WIDTH)
-  }, [width, mileageData.length])
+  if (!width || mileageData.length === 0) return null
 
-  const config = {
-    data: mileageData,
-    xField: 'date',
-    yField: 'value',
-    width: chartWidth || width || 300,
-    height: 260,
-    autoFit: false,
-    color: '#5B8FF9',
-    scale: {
-      y: { min: 0, nice: true },
-    },
-    label: {
-      text: '里程',
-      position: 'top',
-      style: {
-        fill: '#888',
-        fontSize: 10,
-      },
-    },
-    tooltip: {
-      items: [(d: { date: string; value: number }) => ({ name: '里程', value: d.value })]
-    },
-  }
+  const ITEM_WIDTH = 30
+  const displayCount = Math.floor(width / ITEM_WIDTH)
+  const totalCount = mileageData.length
+  const end = 1
+  const start = Math.max(0, 1 - displayCount / totalCount)
 
   return (
-    <div className="chart-scroll-wrapper">
-      <div style={{ width: chartWidth }}>
-        <Column {...config} />
-      </div>
+    <div style={{ width: '100%', height: '260px' }}>
+      <F2Canvas pixelRatio={window.devicePixelRatio}>
+        <Chart data={mileageData}>
+          <Axis field="date" tickCount={5} />
+          <Axis field="value" tickCount={5} />
+          <Interval
+            x="date"
+            y="value"
+            color="#5B8FF9"
+          />
+          <Tooltip showItemMarker />
+          <ScrollBar
+            mode="x"
+            range={[start, end]}
+          />
+        </Chart>
+      </F2Canvas >
     </div>
   )
 }
