@@ -8,6 +8,7 @@ import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
 import MonthlyMileage from './components/monthly-mileage'
+import QuarterlyCost from './components/quarterly-cost'
 import '../chart/style.scss'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -186,6 +187,11 @@ const ChartV2Page = () => {
           <MonthlyMileage recordList={recordList} width={width} />
         </div>
         <p className='chart-legend'>每月行驶里程</p>
+
+        <div className='chart-container'>
+          <QuarterlyCost recordList={recordList} width={width} />
+        </div>
+        <p className='chart-legend'>每季度均耗 (元/百公里)</p>
       </div>
     </div>
   )
