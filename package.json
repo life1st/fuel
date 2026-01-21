@@ -1,6 +1,6 @@
 {
   "name": "fuel",
-  "version": "1.2.0-beta",
+  "version": "1.2.1",
   "type": "module",
   "scripts": {
     "dev": "vite",

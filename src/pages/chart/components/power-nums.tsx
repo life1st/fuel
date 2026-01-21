@@ -1,37 +1,35 @@
 import { useMemo } from 'react'
-import F2 from '@antv/f2'
-import F2Base from './f2-base'
+import { Chart, Interval, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
+import Canvas from '@antv/f2-react'
 import dayjs from 'dayjs'
-import useRecordStore from '@/store/recordStore'
+import { type Record } from '@/store/recordStore'
 
 enum PowerName {
   Charging = '充电',
   Oil = '加油',
 }
 
-type PowerData = {
+interface PowerData {
   date: string
   name: PowerName
   value: number
 }
 
-const PowerNums = ({
-  width,
-}: {
-  width: number
-}) => {
-  const { recordList } = useRecordStore()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AnyCanvas = Canvas as any
 
-  const chartId = "power-chart"
-  
+const PowerNums = ({ recordList, width }: { recordList: Record[]; width: number }) => {
+
   const powerData = useMemo(() => {
     const chargingResult: PowerData[] = []
     const oilResult: PowerData[] = []
-    recordList.forEach((item) => {
+    const sortedList = [...recordList].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
+    sortedList.forEach((item) => {
       const date = dayjs(item.date).format('YY/MM')
       if (item.type === 'charging') {
-        if (date === chargingResult[chargingResult.length - 1]?.date) {
-          chargingResult[chargingResult.length - 1].value += 1
+        const last = chargingResult[chargingResult.length - 1] as PowerData | undefined
+        if (last && date === last.date) {
+          last.value += 1
         } else {
           chargingResult.push({
             date,
@@ -41,8 +39,9 @@ const PowerNums = ({
         }
       }
       if (item.type === 'refueling') {
-        if (date === oilResult[oilResult.length - 1]?.date) {
-          oilResult[oilResult.length - 1].value += 1
+        const last = oilResult[oilResult.length - 1] as PowerData | undefined
+        if (last && date === last.date) {
+          last.value += 1
         } else {
           oilResult.push({
             date,
@@ -63,61 +62,46 @@ const PowerNums = ({
     })
   }, [recordList])
 
-  const mileageData = useMemo(() => {    
-    let mileageList = recordList.reduce((acc, item) => {
-      const date = dayjs(item.date).format('YY/MM')
-      if (acc.length === 0) {
-        acc.push([{ date, value: item.kilometerOfDisplay }])
-      } else {
-        let prevDate = acc[acc.length - 1][0].date
-        if (date === prevDate) {
-          acc[acc.length - 1].push({ date, value: item.kilometerOfDisplay })
-        } else {
-          acc.push([{ date, value: item.kilometerOfDisplay }])
-        }
-      }
-      return acc
-    }, [] as any[])
-    
-    return mileageList.map((list, index) => {
-      if (index === 0) {
-        return {
-          date: list[0].date,
-          value: Number(list[list.length - 1].value),
-        }
-      } else {
-        const prevList = mileageList[index - 1]
-        const startMileage = prevList[prevList.length - 1].value
-        return {
-          date: list[0].date,
-          value: list[list.length - 1].value - startMileage,
-        }
-      }
-    })
-  }, [recordList])
+  const uniqueDateCount = useMemo(() => {
+    return new Set(powerData.map((d) => d.date)).size
+  }, [powerData])
 
-  const renderChart = () => {
-    const chart = new F2.Chart({
-      id: chartId,
-      pixelRatio: window.devicePixelRatio, // 指定分辨率
-    });
-    chart.source(powerData);
-    chart.interval().position('date*value').color('name', (val) => {
-      return val === PowerName.Charging ? '#2FC25B' : '#1890FF'
-    }).adjust({
-      type: 'dodge',
-      marginRatio: 0.05 // 设置分组间柱子的间距
-    });
-    chart.render();
-  }
+  if (!width || powerData.length === 0) return null
+
+  const ITEM_WIDTH = 30
+  const displayCount = Math.floor(width / ITEM_WIDTH)
+  const totalCount = uniqueDateCount
+  const end = 1
+  const start = Math.max(0, 1 - displayCount / totalCount)
 
   return (
-    <F2Base
-      chartId={chartId}
-      width={width}
-      renderChart={renderChart}
-    />
-  );
+    <div style={{ width: '100%', height: '260px' }}>
+      <AnyCanvas pixelRatio={window.devicePixelRatio}>
+        <Chart data={powerData}>
+          <Axis field="date" tickCount={5} />
+          <Axis field="value" tickCount={5} />
+          <Interval
+            x="date"
+            y="value"
+            color={{
+              field: 'name',
+              range: ['#2FC25B', '#1890FF'],
+            }}
+            adjust={{
+              type: 'dodge',
+              marginRatio: 0.1,
+            }}
+          />
+          <Tooltip showItemMarker />
+          <Legend position="top" align="center" />
+          <ScrollBar
+            mode="x"
+            range={[start, end]}
+          />
+        </Chart>
+      </AnyCanvas>
+    </div>
+  )
 }
 
 export default PowerNums

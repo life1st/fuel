@@ -9,7 +9,7 @@ const TabBar = () => {
 
   const tabs = [
     { icon: UnorderedListOutline, label: '历史', path: '/' },
-    { icon: HistogramOutline, label: '统计', path: '/chartv2' },
+    { icon: HistogramOutline, label: '统计', path: '/chart' },
     { icon: SetOutline, label: '偏好', path: '/preference' }
   ]
 

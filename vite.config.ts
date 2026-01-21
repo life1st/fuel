@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
-// import { analyzer } from 'vite-bundle-analyzer'
+import { analyzer } from 'vite-bundle-analyzer'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -84,7 +84,7 @@ export default defineConfig({
         ]
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*'],
-    })
+    }),
     // analyzer(),
   ],
   css: {
