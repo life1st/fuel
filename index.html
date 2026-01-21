@@ -11,6 +11,13 @@
     <meta name="apple-mobile-web-app-title" content="Fuel" />
     <meta name="theme-color" content="#fff" />
     <link rel="apple-touch-icon" href="icon.svg" />
+    <script>
+      (function () {
+        const themeColor = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#181818' : '#fff';
+        document.documentElement.style.backgroundColor = themeColor;
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+      })();
+    </script>
     <title>Fuel</title>
   </head>
   <body>
