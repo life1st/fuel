@@ -45,16 +45,19 @@ const useRecordStore = create<RecordState>()(
         });
       },
       setRecordData: (data: Record) => {
-        set((state) => ({
-          demoMode: false,
-          recordList: [
-            ...state.recordList,
-            {
-              ...data,
-              id: data.id || Date.now(),
-            },
-          ],
-        }));
+        set((state) => {
+          const list = state.demoMode ? [] : state.recordList;
+          return {
+            demoMode: false,
+            recordList: [
+              ...list,
+              {
+                ...data,
+                id: data.id || Date.now(),
+              },
+            ],
+          };
+        });
       },
       mergeRecordData: (list: Record[]) => {
         set((state) => ({
