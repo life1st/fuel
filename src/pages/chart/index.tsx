@@ -1,198 +1,194 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import F2, { LegendItem } from "@antv/f2";
+import Canvas from '@antv/f2-react'
+import { Chart, Line, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
 import dayjs from 'dayjs'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
 import MonthlyMileage from './components/monthly-mileage'
-import './style.scss'
+import QuarterlyCost from './components/quarterly-cost'
+import '../chart/style.scss'
 
-const ChargingChart = ({
-  recordList,
-  width,
-}: {
-  recordList: Record[];
-  width: number;
-}) => {
-  const chartId = 'basic-chart'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AnyCanvas = Canvas as any
 
+const ChargingChart = ({ recordList, width }: { recordList: Record[]; width: number }) => {
   const chargingData = useMemo(() => {
-    const result: {
-      date: string;
-      value: number;
-      type: string;
-    }[] = [];
-    recordList
-      .filter((r) => r.type === "charging")
-      .forEach((r) => {
-        const date = dayjs(r.date).format("MM/DD");
-        result.push(
-          {
-            date,
-            value: Number(r.cost),
-            type: "费用",
-          },
-          {
-            date,
-            value: Number(((r.cost / r.electric) * 10).toFixed(2)),
-            type: "价格*10",
-          },
-          {
-            date,
-            value: r.electric,
-            type: "电量",
-          }
-        );
-      });
-    return result;
-  }, [recordList]);
+    const result: { date: string; value: number; type: string }[] = []
+    const sortedList = [...recordList]
+      .filter((r) => r.type === 'charging')
+      .sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
 
-  const renderChart = () => {
-    const chart = new F2.Chart({
-      id: chartId,
-      pixelRatio: window.devicePixelRatio, // 指定分辨率
-    });
-    chart.source(chargingData, {
-      cost: {
-        tickCount: 5,
-        min: 0,
-      },
-    });
-    chart.tooltip({
-      custom: true, // 自定义 tooltip 内容框
-      onChange: function onChange(obj) {
-        const legend = chart.get("legendController").legends.top![0];
-        const tooltipItems = obj.items;
-        const legendItems = legend.items;
-        const map = new Map();
-        legendItems.forEach(function (item) {
-          map.set(item.name, { ...item });
-        });
-        tooltipItems.forEach(function (item) {
-          const name = item.name;
-          const value = item.value;
-          if (map.get(name)) {
-            map.set(name, { ...item, value });
-          }
-        });
-        legend.setItems(Array.from(map.values()) as LegendItem[]);
-      },
-      onHide: function onHide() {
-        const legend = chart.get("legendController").legends.top![0];
-        legend.setItems(chart.getLegendItems().type ?? []);
-      },
-    });
-    chart.line().position("date*value").color("type");
+    sortedList.forEach((r) => {
+      const fullDate = dayjs(r.date).format('YYYY-MM-DD HH:mm:ss')
+      const price = Number((r.cost / r.electric).toFixed(2))
+      result.push(
+        { date: fullDate, value: Number(r.cost), type: '费用' },
+        { date: fullDate, value: price, type: '单价' },
+        { date: fullDate, value: r.electric, type: '电量' }
+      )
+    })
+    return result
+  }, [recordList])
 
-    chart.render();
-  };
-  useEffect(() => {
-    if (width) {
-      renderChart();
-    }
-  }, [width]);
+  const uniqueDateCount = useMemo(() => {
+    return new Set(chargingData.map((d) => d.date)).size
+  }, [chargingData])
+
+  if (!width || chargingData.length === 0) return null
+
+  const ITEM_WIDTH = 30
+  const displayCount = Math.floor(width / ITEM_WIDTH)
+  const totalCount = uniqueDateCount
+  const end = 1
+  const start = Math.max(0, 1 - displayCount / totalCount)
 
   return (
-    <div className="basic-chart chart-container">
-      <canvas id={chartId} width={width || 100} height="260"></canvas>
+    <div style={{ width: '100%', height: '260px' }}>
+      <AnyCanvas pixelRatio={window.devicePixelRatio}>
+        <Chart
+          data={chargingData}
+          scale={{
+            date: { nice: false }
+          }}
+        >
+          <Axis
+            field="date"
+            tickCount={5}
+            formatter={(val: string | number) => dayjs(val).format('MM/DD')}
+          />
+          <Axis
+            field="value"
+            tickCount={5}
+            position="left"
+          />
+          <Line
+            x="date"
+            y="value"
+            color={{
+              field: 'type',
+              range: ['#1890FF', '#2FC25B', '#FACC14'],
+            }}
+            shape="smooth"
+          />
+          <Tooltip showCrosshairs showItemMarker triggerOn={'click'} />
+          <Legend
+            position="top"
+            align="center"
+          />
+          <ScrollBar
+            mode="x"
+            range={[start, end]}
+          />
+        </Chart>
+      </AnyCanvas >
     </div>
-  );
-};
+  )
+}
 
-const CostPer100KMChart = ({
-  recordList,
-  width,
-}: {
-  recordList: Record[];
-  width: number;
-}) => {
-  const chartId = "per-cost-chart";
+const CostPer100KMChart = ({ recordList, width }: { recordList: Record[]; width: number }) => {
   const data = useMemo(() => {
-    const result: {
-      range: number;
-      value: number;
-    }[] = [];
-    let costCount = 0;
-    recordList.forEach(({ kilometerOfDisplay, cost }) => {
-      costCount += Number(cost);
+    const result: { range: number; value: number }[] = []
+    let costCount = 0
+    const sortedList = [...recordList].sort((a, b) => a.kilometerOfDisplay - b.kilometerOfDisplay)
+
+    sortedList.forEach(({ kilometerOfDisplay, cost }) => {
+      costCount += Number(cost)
       if (kilometerOfDisplay >= result.length * 100) {
         const value = Number(((costCount / kilometerOfDisplay) * 100).toFixed(2))
-        const lens = Math.floor((kilometerOfDisplay - result.length * 100)/100)
+        const lens = Math.floor((kilometerOfDisplay - result.length * 100) / 100)
         for (let i = 0; i < lens; i++) {
           result.push({
             range: result.length * 100,
             value,
-          });
+          })
         }
       }
-    });
-    return result.filter((r) => r.value < 100);
-  }, [recordList]);
+    })
+    return result.filter((r) => r.value < 100)
+  }, [recordList])
 
-  const renderChart = () => {
-    const chart = new F2.Chart({
-      id: chartId,
-      pixelRatio: window.devicePixelRatio, // 指定分辨率
-    });
-    chart.source(data, {
-      range: {
-        tickCount: 5,
-      },
-      value: {
-        alias: "平均花费",
-      },
-    });
-    chart.line().position("range*value").shape("smooth");
+  if (!width || data.length === 0) return null
 
-    chart.render();
-  };
-  useEffect(() => {
-    if (width) {
-      renderChart();
-    }
-  }, [width]);
+  const ITEM_WIDTH = 30
+  const displayCount = Math.floor(width / ITEM_WIDTH)
+  const totalCount = data.length
+  const end = 1
+  const start = Math.max(0, 1 - displayCount / totalCount)
 
   return (
-    <div className="per-cost-chart chart-container">
-      <canvas id={chartId} width={width || 100} height="260"></canvas>
+    <div style={{ width: '100%', height: '260px' }}>
+      <AnyCanvas pixelRatio={window.devicePixelRatio}>
+        <Chart
+          data={data}
+          scale={{
+            range: { nice: false }
+          }}
+        >
+          <Axis field="range" tickCount={5} />
+          <Axis field="value" tickCount={5} />
+          <Line x="range" y="value" shape="smooth" color="#1890FF" />
+          <Tooltip showCrosshairs showItemMarker triggerOn={'click'} />
+          <ScrollBar
+            mode="x"
+            range={[start, end]}
+          />
+        </Chart>
+      </AnyCanvas >
     </div>
-  );
-};
+  )
+}
 
-const ChartPage = () => {
+const ChartV2Page = () => {
   const { recordList } = useRecordStore()
   const chartRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState<number>(0)
 
   useEffect(() => {
     const updateWidth = () => {
-      const rect = chartRef.current!.getBoundingClientRect()
-      setWidth(rect.width - 32)
+      if (chartRef.current) {
+        const rect = chartRef.current.getBoundingClientRect()
+        setWidth(rect.width)
+      }
     }
-    if (chartRef.current) {
-      updateWidth()
-    }
+    updateWidth()
     window.addEventListener('resize', updateWidth)
     return () => {
       window.removeEventListener('resize', updateWidth)
     }
-  }, [chartRef])
-  const chartData = recordList
+  }, [])
+
   return (
     <div className='chart-page'>
       <StatisticsCard />
-      <div className='content' ref={chartRef}>
-        <ChargingChart recordList={chartData} width={width} />
+      <div className='content' ref={chartRef} style={{ padding: '0 16px 16px' }}>
+        <div className='chart-container'>
+          <ChargingChart recordList={recordList} width={width} />
+        </div>
         <p className='chart-legend'>充电记录</p>
-        <CostPer100KMChart recordList={chartData} width={width} />
+
+        <div className='chart-container'>
+          <CostPer100KMChart recordList={recordList} width={width} />
+        </div>
         <p className='chart-legend'>每百公里平均费用</p>
-        <PowerNums width={width} />
+
+        <div className='chart-container'>
+          <PowerNums recordList={recordList} width={width} />
+        </div>
         <p className='chart-legend'>充电加油记录</p>
-        <MonthlyMileage width={width} />
+
+        <div className='chart-container'>
+          <MonthlyMileage recordList={recordList} width={width} />
+        </div>
         <p className='chart-legend'>每月行驶里程</p>
+
+        <div className='chart-container'>
+          <QuarterlyCost recordList={recordList} width={width} />
+        </div>
+        <p className='chart-legend'>每季度均耗 (元/百公里)</p>
       </div>
     </div>
   )
 }
 
-export default ChartPage 
+export default ChartV2Page

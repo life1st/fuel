@@ -1,10 +1,15 @@
 import { FC } from 'react';
 import useRecordStore from '@/store/recordStore';
 import './style.scss';
+import { useLocation } from 'react-router-dom';
 
 const DemoModeIndicator: FC = () => {
   const { demoMode } = useRecordStore();
+  const location = useLocation();
 
+  const isYearStat = location.pathname.startsWith('/year-stat');
+
+  if (isYearStat) return null;
   if (!demoMode) return null;
 
   return (

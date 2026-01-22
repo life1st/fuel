@@ -12,5 +12,9 @@
   }
   .chart-container {
     user-select: none;
-  }
-} 
+    background: #fff;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+}
