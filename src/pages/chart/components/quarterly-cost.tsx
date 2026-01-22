@@ -116,14 +116,10 @@ const QuarterlyCost = ({ recordList, width }: { recordList: Record[]; width: num
             />
             <Tooltip 
               showItemMarker
+              triggerOn='click'
             />
             <Legend
               position="top"
-              align="left"
-              items={[
-                { name: '里程', marker: 'square', color: '#5B8FF9' },
-                { name: '总花费', marker: 'square', color: '#2FC25B' }
-              ]}
             />
             <ScrollBar
               mode="x"

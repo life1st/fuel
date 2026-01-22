@@ -61,7 +61,7 @@ const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: nu
             color="#5B8FF9"
             size={ITEM_WIDTH}
           />
-          <Tooltip showItemMarker />
+          <Tooltip showItemMarker triggerOn={'click'} />
           <ScrollBar
             mode="x"
             range={[start, end]}

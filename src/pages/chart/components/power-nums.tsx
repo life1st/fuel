@@ -92,8 +92,8 @@ const PowerNums = ({ recordList, width }: { recordList: Record[]; width: number 
               marginRatio: 0.1,
             }}
           />
-          <Tooltip showItemMarker />
-          <Legend position="top" align="center" />
+          <Tooltip showCrosshairs showItemMarker triggerOn={'click'} />
+          <Legend position="top" />
           <ScrollBar
             mode="x"
             range={[start, end]}

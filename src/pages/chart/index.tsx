@@ -1,8 +1,6 @@
 import Canvas from '@antv/f2-react'
 import { Chart, Line, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
 import dayjs from 'dayjs'
-import { Link } from 'react-router-dom'
-import { Button } from 'antd-mobile'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useRecordStore, { type Record } from '@/store/recordStore'
 import StatisticsCard from '@/components/statistics-card'
@@ -64,10 +62,6 @@ const ChargingChart = ({ recordList, width }: { recordList: Record[]; width: num
             tickCount={5}
             position="left"
           />
-          {/* F2 v5 实现多轴较为复杂，这里先简化为单轴，或者通过数据缩放模拟。
-              由于 F2 v5 的 Line 组件默认绑定到全局 scale，
-              这里我们采用统一 Y 轴，但颜色区分。
-          */}
           <Line
             x="date"
             y="value"
@@ -77,7 +71,7 @@ const ChargingChart = ({ recordList, width }: { recordList: Record[]; width: num
             }}
             shape="smooth"
           />
-          <Tooltip showCrosshairs showItemMarker />
+          <Tooltip showCrosshairs showItemMarker triggerOn={'click'} />
           <Legend
             position="top"
             align="center"
@@ -134,7 +128,7 @@ const CostPer100KMChart = ({ recordList, width }: { recordList: Record[]; width:
           <Axis field="range" tickCount={5} />
           <Axis field="value" tickCount={5} />
           <Line x="range" y="value" shape="smooth" color="#1890FF" />
-          <Tooltip showCrosshairs showItemMarker />
+          <Tooltip showCrosshairs showItemMarker triggerOn={'click'} />
           <ScrollBar
             mode="x"
             range={[start, end]}
