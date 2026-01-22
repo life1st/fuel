@@ -2,9 +2,11 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -50,6 +52,7 @@
         opacity: 0.9;
         margin-bottom: 4px;
       }
+
       .value {
         font-size: 32px;
         font-weight: bold;
@@ -73,6 +76,7 @@
           opacity: 0.8;
           margin-bottom: 4px;
         }
+
         .value {
           font-size: 16px;
           font-weight: 600;
@@ -85,15 +89,15 @@
     margin-bottom: 16px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    
+
     .adm-card-header {
       border-bottom: 1px solid var(--adm-color-border);
       padding: 12px 16px;
     }
-    
+
     .adm-card-header-title {
-        font-weight: 600;
-        font-size: 16px;
+      font-weight: 600;
+      font-size: 16px;
     }
 
     .record-row {
@@ -114,13 +118,13 @@
 
       .row-content {
         text-align: right;
-        
+
         .highlight-value {
           font-size: 18px;
           font-weight: 600;
           color: var(--adm-color-text);
         }
-        
+
         .date {
           font-size: 12px;
           color: var(--adm-color-weak);
@@ -128,51 +132,65 @@
         }
       }
     }
-    
+
     .empty-tip {
-        text-align: center;
-        color: var(--adm-color-weak);
-        padding: 20px 0;
+      text-align: center;
+      color: var(--adm-color-weak);
+      padding: 20px 0;
     }
 
     .type-stat {
-        padding: 8px 0;
-        
-        .type-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            
-            .type-name {
-                font-weight: 600;
-                font-size: 15px;
-            }
-            .count {
-                color: var(--adm-color-text-secondary);
-                font-size: 14px;
-                
-                .num {
-                    font-weight: bold;
-                    margin: 0 2px;
-                    font-size: 16px;
-                    font-family: 'Din Alternate', sans-serif;
-                    
-                    &.refueling { color: #1677ff; }
-                    &.charging { color: #52c41a; }
-                }
-            }
+      padding: 8px 0;
+
+      .type-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        .type-name {
+          font-weight: 600;
+          font-size: 15px;
         }
-        
-        .type-details {
-            font-size: 13px;
-            color: var(--adm-color-weak);
+
+        .count {
+          color: var(--adm-color-text-secondary);
+          font-size: 14px;
+
+          .num {
+            font-weight: bold;
+            margin: 0 2px;
+            font-size: 16px;
+            font-family: 'Din Alternate', sans-serif;
+
+            &.refueling {
+              color: #1677ff;
+            }
+
+            &.charging {
+              color: #52c41a;
+            }
+          }
         }
+      }
+
+      .type-details {
+        font-size: 13px;
+        color: var(--adm-color-weak);
+      }
     }
-    
+
     .divider {
-        height: 1px;
-        background-color: var(--adm-color-border);
-        margin: 8px 0;
+      height: 1px;
+      background-color: var(--adm-color-border);
+      margin: 8px 0;
     }
+  }
+
+  .refueling-num {
+    color: #1677ff;
+  }
+
+  .charging-num {
+    color: #52c41a;
   }
 }

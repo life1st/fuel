@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { NavBar, Card, Toast } from 'antd-mobile';
 import { AddOutline, SendOutline } from 'antd-mobile-icons';
@@ -230,6 +230,47 @@ const YearStat: FC = () => {
         };
     }, [recordList, year, shareDataStr]);
 
+    const originalTitle = useRef(document.title);
+    const originalDescription = useRef<string | null>(null);
+
+    // Capture original description once
+    useEffect(() => {
+        const meta = document.querySelector('meta[name="description"]');
+        if (meta) {
+            originalDescription.current = meta.getAttribute('content');
+        }
+    }, []);
+
+    // Update title and description
+    useEffect(() => {
+        if (!statData) return;
+
+        const newTitle = `${statData.year} 年度用车报告`;
+        const newDescription = `我在${statData.year}年共花费${statData.totalCost.toFixed(2)}元，行驶${statData.totalMileage.toFixed(0)}公里。快来看看你的吧！`;
+
+        document.title = newTitle;
+
+        let meta = document.querySelector('meta[name="description"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'description');
+            document.head.appendChild(meta);
+        }
+        meta.setAttribute('content', newDescription);
+
+        return () => {
+            document.title = originalTitle.current;
+            const m = document.querySelector('meta[name="description"]');
+            if (m) {
+                if (originalDescription.current !== null) {
+                    m.setAttribute('content', originalDescription.current);
+                } else {
+                    m.remove();
+                }
+            }
+        };
+    }, [statData]);
+
     if (!statData) {
         return (
             <div className="year-stat-page">
@@ -351,7 +392,7 @@ const YearStat: FC = () => {
                             <span className="count">共 <span className="num refueling">{statData.refuelingCount}</span> 次</span>
                         </div>
                         <div className="type-details">
-                            <span>总量: {statData.totalOil.toFixed(2)} L</span>
+                            <span>总量: <span className='refueling-num'>{statData.totalOil.toFixed(2)}</span> L</span>
                         </div>
                     </div>
                     <div className="divider" />
@@ -361,7 +402,7 @@ const YearStat: FC = () => {
                             <span className="count">共 <span className="num charging">{statData.chargingCount}</span> 次</span>
                         </div>
                         <div className="type-details">
-                            <span>总量: {statData.totalElectric.toFixed(2)} kWh</span>
+                            <span>总量: <span className='charging-num'>{statData.totalElectric.toFixed(2)}</span> kWh</span>
                         </div>
                     </div>
                 </Card>
