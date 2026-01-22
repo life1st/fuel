@@ -22,11 +22,13 @@ const ChargingDistributionChart = ({ data }: Props) => {
   return (
     <div style={{ width: '100%', height: '180px' }}>
       <AnyCanvas pixelRatio={window.devicePixelRatio}>
-        <Chart data={chartData}>
+        <Chart data={chartData} scale={{
+          range: { nice: false }
+        }}>
           <Axis
-             field="index"
-             tickCount={5}
-             formatter={(val) => `${val}`}
+            field="index"
+            tickCount={5}
+            formatter={() => ``}
           />
           <Axis 
             field="value" 
@@ -36,12 +38,12 @@ const ChargingDistributionChart = ({ data }: Props) => {
             x="index"
             y="value"
             shape="smooth"
-            color="#1677ff"
+            color="#52c41a"
           />
           <Area
             x="index"
             y="value"
-            color="l(90) 0:#1677ff 1:rgba(22,119,255,0.1)"
+            color="l(90) 0:#52c41a 1:rgba(22,119,255,0.1)"
             shape="smooth"
           />
           <Tooltip 
