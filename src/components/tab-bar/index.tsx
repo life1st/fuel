@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import FloatButton from '@/components/float-button'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UnorderedListOutline, HistogramOutline, SetOutline } from 'antd-mobile-icons'
@@ -12,6 +13,18 @@ const TabBar = () => {
     { icon: HistogramOutline, label: '统计', path: '/chart' },
     { icon: SetOutline, label: '偏好', path: '/preference' }
   ]
+
+  const showTabBar = useMemo(() => {
+    const hidePaths = ['/year-stat']
+    if (hidePaths.some(p => location.pathname.startsWith(p))) {
+      return false
+    }
+    return true
+  }, [location])
+
+  if (!showTabBar) {
+    return null
+  }
 
   return (
       <div className='tab-bar'>

@@ -7,6 +7,7 @@ const Home = lazy(() => import('./pages/home'))
 const Record = lazy(() => import('./pages/record'))
 const Preference = lazy(() => import('./pages/preference'))
 const Chart = lazy(() => import('./pages/chart'))
+const YearStat = lazy(() => import('./pages/year-stat'))
 
 const router = createHashRouter([
   {
@@ -33,6 +34,13 @@ const router = createHashRouter([
           <Chart />
         </Suspense>
       )
+      }, {
+        path: '/year-stat/:year',
+        element: (
+          <Suspense fallback={<Skeleton loading active rows={4} />}>
+            <YearStat />
+          </Suspense>
+        )
       },
     ]
   },
