@@ -315,6 +315,13 @@ const YearStat: FC = () => {
                 </div>
 
                 <Card title="加油报告" className="stat-card">
+                    {/* <div>
+                        <p className="count">
+                            <span>共 <span className="refueling-num">{statData.refuelingCount}</span> 次，</span>
+                            <span>总量: <span className='refueling-num'>{statData.totalOil.toFixed(2)}</span> L</span>
+                        </p>
+                        <span>平均每次 <span>{Number((statData.totalOil / statData.refuelingCount).toFixed(2))}</span> L</span>
+                    </div> */}
                     {statData.maxPriceRecord && (
                         <div className="record-row">
                             <div className="row-title">单价最高</div>
@@ -389,20 +396,28 @@ const YearStat: FC = () => {
                     <div className="type-stat">
                         <div className="type-header">
                             <span className="type-name">加油</span>
-                            <span className="count">共 <span className="num refueling">{statData.refuelingCount}</span> 次</span>
+                            <span className="count">
+                                共 <span className="num refueling">{statData.refuelingCount}</span> 次，
+                                总量: <span className='refueling-num'>{statData.totalOil.toFixed(2)}</span> L
+                            </span>
                         </div>
                         <div className="type-details">
-                            <span>总量: <span className='refueling-num'>{statData.totalOil.toFixed(2)}</span> L</span>
+                            <span></span>
+                            <span>平均每次 <span>{Number((statData.totalOil / statData.refuelingCount).toFixed(2))}</span> L</span>
                         </div>
                     </div>
                     <div className="divider" />
                     <div className="type-stat">
                         <div className="type-header">
                             <span className="type-name">充电</span>
-                            <span className="count">共 <span className="num charging">{statData.chargingCount}</span> 次</span>
+                            <span className="count">
+                                共 <span className="num charging">{statData.chargingCount}</span> 次，
+                                总量: <span className='charging-num'>{statData.totalElectric.toFixed(2)}</span> kWh
+                            </span>
                         </div>
                         <div className="type-details">
-                            <span>总量: <span className='charging-num'>{statData.totalElectric.toFixed(2)}</span> kWh</span>
+                            <span></span>
+                            <span>平均每次 <span>{Number((statData.totalElectric / statData.chargingCount).toFixed(2))}</span> kWh</span>
                         </div>
                     </div>
                 </Card>

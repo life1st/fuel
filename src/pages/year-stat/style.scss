@@ -176,6 +176,8 @@
       .type-details {
         font-size: 13px;
         color: var(--adm-color-weak);
+        display: flex;
+        justify-content: space-between;
       }
     }
 
