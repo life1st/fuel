@@ -67,6 +67,17 @@
       margin-bottom: 0;
     }
     
+    &.switch-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .filter-label {
+        margin-bottom: 0;
+      }
+    }
+
     .filter-label {
       font-size: 14px;
       color: #666;

@@ -12,7 +12,7 @@ import './style.scss'
 const Home: FC = () => {
   const navigate = useNavigate()
   const { recordList } = useRecordStore()
-  const { energyType, month } = useFilterStore()
+  const { energyType, month, onlySummary } = useFilterStore()
 
   const data = useMemo(() => {
     const source = recordList
@@ -155,7 +155,9 @@ const Home: FC = () => {
         acc.currentMileage = record.kilometerOfDisplay || 0;
         
         // 添加能源记录
-        acc.result.push({ type: 'energy', record });
+        if (!onlySummary) {
+          acc.result.push({ type: 'energy', record });
+        }
         
         return acc;
       }, {
@@ -205,7 +207,7 @@ const Home: FC = () => {
     }
 
     return energyList.result.reverse(); // 最后反转整个列表，实现时间倒序显示
-  }, [recordList, energyType, month])
+  }, [recordList, energyType, month, onlySummary])
 
   return (
     <div className="home-container">
