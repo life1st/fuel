@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from 'react';
-import { Selector, DatePicker, Button, Mask } from 'antd-mobile';
+import { Selector, DatePicker, Button, Mask, Switch } from 'antd-mobile';
 import dayjs from 'dayjs';
 import useFilterStore from '@/store/filterStore';
 import type { EnergyType } from '@/utils/types';
@@ -10,7 +10,7 @@ interface FilterProps {
 }
 
 const Filter: FC<FilterProps> = ({ trigger }) => {
-  const { energyType, month, setEnergyType, setMonth, resetFilters } = useFilterStore();
+  const { energyType, month, onlySummary, setEnergyType, setMonth, setOnlySummary, resetFilters } = useFilterStore();
   const [dateVisible, setDateVisible] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   
@@ -42,7 +42,7 @@ const Filter: FC<FilterProps> = ({ trigger }) => {
   };
 
   // 判断是否有筛选条件
-  const hasFilters = energyType !== 'all' || month !== null;
+  const hasFilters = energyType !== 'all' || month !== null || onlySummary;
   
   // 默认触发器
   const defaultTrigger = (
@@ -128,6 +128,23 @@ const Filter: FC<FilterProps> = ({ trigger }) => {
               />
             </div>
             
+            <div className="filter-section switch-section">
+              <div className="filter-label">只看汇总</div>
+              <Switch
+                checked={onlySummary}
+                onChange={(checked) => {
+                  setOnlySummary(checked);
+                  setFilterVisible(false);
+                }}
+                className="filter-switch"
+                style={{
+                  '--checked-color': '#ff9500',
+                  '--height': '24px',
+                  '--width': '44px',
+                }}
+              />
+            </div>
+
             <div className="filter-actions">
               <Button 
                 size="small" 
