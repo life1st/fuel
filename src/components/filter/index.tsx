@@ -125,6 +125,7 @@ const Filter: FC<FilterProps> = ({ trigger }) => {
                 precision="month"
                 onConfirm={handleMonthChange}
                 max={new Date()}
+                value={month ? dayjs(month).toDate() : new Date()}
               />
             </div>
             
