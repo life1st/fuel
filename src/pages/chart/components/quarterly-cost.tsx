@@ -7,7 +7,7 @@ import { type Record } from '@/store/recordStore'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AnyCanvas = F2Canvas as any
 
-const QuarterlyCost = ({ recordList, width }: { recordList: Record[]; width: number }) => {
+const QuarterlyCost = ({ recordList, width, startMileage }: { recordList: Record[]; width: number; startMileage: number }) => {
 
   const { barData, lineData } = useMemo(() => {
     const sortedList = [...recordList].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
@@ -33,7 +33,7 @@ const QuarterlyCost = ({ recordList, width }: { recordList: Record[]; width: num
         const prevRec = sortedList[firstRecIdx - 1]
         deltaKm = Number(lastRec.kilometerOfDisplay) - Number(prevRec.kilometerOfDisplay)
       } else {
-        deltaKm = Number(lastRec.kilometerOfDisplay)
+        deltaKm = Number(lastRec.kilometerOfDisplay) - startMileage
       }
 
       if (deltaKm > 0) {
@@ -79,7 +79,7 @@ const QuarterlyCost = ({ recordList, width }: { recordList: Record[]; width: num
     })
 
     return { barData: bData, lineData: lData }
-  }, [recordList])
+  }, [recordList, startMileage])
 
   if (!width || barData.length === 0) return null
 
@@ -157,13 +157,6 @@ const QuarterlyCost = ({ recordList, width }: { recordList: Record[]; width: num
                 });
               }}
             />
-            {/* <Legend
-              position="top"
-              align="left"
-              items={[
-                { name: '均耗趋势', marker: 'line', color: '#FACC14' }
-              ]}
-            /> */}
             <ScrollBar
               mode="x"
               range={[start, end]}

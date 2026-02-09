@@ -3,6 +3,7 @@ import { Chart, Line, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useRecordStore, { type Record } from '@/store/recordStore'
+import { Segmented } from 'antd-mobile'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
 import MonthlyMileage from './components/monthly-mileage'
@@ -86,7 +87,7 @@ const ChargingChart = ({ recordList, width }: { recordList: Record[]; width: num
   )
 }
 
-const CostPer100KMChart = ({ recordList, width }: { recordList: Record[]; width: number }) => {
+const CostPer100KMChart = ({ recordList, width, startMileage }: { recordList: Record[]; width: number; startMileage: number }) => {
   const data = useMemo(() => {
     const result: { range: number; value: number }[] = []
     let costCount = 0
@@ -94,9 +95,10 @@ const CostPer100KMChart = ({ recordList, width }: { recordList: Record[]; width:
 
     sortedList.forEach(({ kilometerOfDisplay, cost }) => {
       costCount += Number(cost)
-      if (kilometerOfDisplay >= result.length * 100) {
-        const value = Number(((costCount / kilometerOfDisplay) * 100).toFixed(2))
-        const lens = Math.floor((kilometerOfDisplay - result.length * 100) / 100)
+      const relativeKm = kilometerOfDisplay - startMileage
+      if (relativeKm >= result.length * 100) {
+        const value = Number(((costCount / relativeKm) * 100).toFixed(2))
+        const lens = Math.floor((relativeKm - result.length * 100) / 100)
         for (let i = 0; i < lens; i++) {
           result.push({
             range: result.length * 100,
@@ -106,7 +108,7 @@ const CostPer100KMChart = ({ recordList, width }: { recordList: Record[]; width:
       }
     })
     return result.filter((r) => r.value < 100)
-  }, [recordList])
+  }, [recordList, startMileage])
 
   if (!width || data.length === 0) return null
 
@@ -143,6 +145,29 @@ const ChartV2Page = () => {
   const { recordList } = useRecordStore()
   const chartRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState<number>(0)
+  const [filterType, setFilterType] = useState<'all' | 'current'>('all')
+
+  const filteredRecordList = useMemo(() => {
+    if (filterType === 'all') return recordList
+    const currentYear = dayjs().year()
+    return recordList.filter((r) => dayjs(r.date).year() === currentYear)
+  }, [recordList, filterType])
+
+  const startMileage = useMemo(() => {
+    if (recordList.length === 0) return 0
+    const sortedAll = [...recordList].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
+
+    if (filterType === 'all') {
+      return sortedAll[0].kilometerOfDisplay
+    } else {
+      const currentYear = dayjs().year()
+      const previousYearRecords = sortedAll.filter((r) => dayjs(r.date).year() < currentYear)
+      if (previousYearRecords.length > 0) {
+        return previousYearRecords[previousYearRecords.length - 1].kilometerOfDisplay
+      }
+      return 0
+    }
+  }, [recordList, filterType])
 
   useEffect(() => {
     const updateWidth = () => {
@@ -160,30 +185,41 @@ const ChartV2Page = () => {
 
   return (
     <div className='chart-page'>
-      <StatisticsCard />
+      <div className='filter-container'>
+        <Segmented
+          options={[
+            { label: '全部', value: 'all' },
+            { label: '当年', value: 'current' },
+          ]}
+          value={filterType}
+          onChange={(v) => setFilterType(v as 'all' | 'current')}
+          block
+        />
+      </div>
+      <StatisticsCard recordList={filteredRecordList} startMileage={startMileage} />
       <div className='content' ref={chartRef} style={{ padding: '0 16px 16px' }}>
         <div className='chart-container'>
-          <ChargingChart recordList={recordList} width={width} />
+          <ChargingChart recordList={filteredRecordList} width={width} />
         </div>
         <p className='chart-legend'>充电记录</p>
 
         <div className='chart-container'>
-          <CostPer100KMChart recordList={recordList} width={width} />
+          <CostPer100KMChart recordList={filteredRecordList} width={width} startMileage={startMileage} />
         </div>
         <p className='chart-legend'>每百公里平均费用</p>
 
         <div className='chart-container'>
-          <PowerNums recordList={recordList} width={width} />
+          <PowerNums recordList={filteredRecordList} width={width} />
         </div>
         <p className='chart-legend'>充电加油记录</p>
 
         <div className='chart-container'>
-          <MonthlyMileage recordList={recordList} width={width} />
+          <MonthlyMileage recordList={filteredRecordList} width={width} startMileage={startMileage} />
         </div>
         <p className='chart-legend'>每月行驶里程</p>
 
         <div className='chart-container'>
-          <QuarterlyCost recordList={recordList} width={width} />
+          <QuarterlyCost recordList={filteredRecordList} width={width} startMileage={startMileage} />
         </div>
         <p className='chart-legend'>每季度均耗 (元/百公里)</p>
       </div>

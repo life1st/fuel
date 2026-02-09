@@ -1,20 +1,27 @@
 import { FC, useMemo } from 'react';
-import useRecordStore from '@/store/recordStore';
+import useRecordStore, { Record } from '@/store/recordStore';
 import './style.scss';
 
-const StatisticsCard: FC = () => {
-  const { recordList } = useRecordStore();
+interface StatisticsCardProps {
+  recordList?: Record[];
+  startMileage?: number;
+}
+
+const StatisticsCard: FC<StatisticsCardProps> = ({ recordList: propsRecordList, startMileage }) => {
+  const { recordList: storeRecordList } = useRecordStore();
+  const recordList = propsRecordList || storeRecordList;
 
   const statistics = useMemo(() => {
     // 按时间排序，找到最早和最新的里程数
-    const sortedRecords = recordList.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedRecords = [...recordList].sort((a: Record, b: Record) => new Date(a.date).getTime() - new Date(b.date).getTime());
     const lastRecord = sortedRecords[sortedRecords.length - 1];
 
     // 计算总里程
-    const totalKilometers = lastRecord?.kilometerOfDisplay ?? 0;
+    const latestOdo = lastRecord?.kilometerOfDisplay ?? 0;
+    const totalKilometers = startMileage !== undefined ? Math.max(0, latestOdo - startMileage) : latestOdo;
 
     // 分别统计加油和充电的总花费
-    const statisticsNums = recordList.reduce((acc, record) => {
+    const statisticsNums = recordList.reduce((acc: any, record: Record) => {
         if (record.type === 'refueling') {
           acc.refuelingCost += Number(record.cost);
 
