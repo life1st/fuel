@@ -185,7 +185,7 @@ const ChartV2Page = () => {
 
   return (
     <div className='chart-page'>
-      <div className='filter-container'>
+      <div className='chart-filter-container'>
         <Segmented
           options={[
             { label: '全部', value: 'all' },
