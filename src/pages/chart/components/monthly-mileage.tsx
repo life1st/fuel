@@ -4,7 +4,10 @@ import F2Canvas from '@antv/f2-react'
 import dayjs from 'dayjs'
 import { type Record } from '@/store/recordStore'
 
-const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: number }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AnyCanvas = F2Canvas as any
+
+const MonthlyMileage = ({ recordList, width, startMileage }: { recordList: Record[]; width: number; startMileage: number }) => {
 
   const mileageData = useMemo(() => {
     const sortedList = [...recordList].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
@@ -28,18 +31,18 @@ const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: nu
       if (index === 0) {
         return {
           date: list[0].date,
-          value: Number(list[list.length - 1].value),
+          value: Number(list[list.length - 1].value) - startMileage,
         }
       } else {
         const prevList = mileageList[index - 1]
-        const startMileage = prevList[prevList.length - 1].value
+        const prevEndMileage = prevList[prevList.length - 1].value
         return {
           date: list[0].date,
-          value: list[list.length - 1].value - startMileage,
+          value: list[list.length - 1].value - prevEndMileage,
         }
       }
     })
-  }, [recordList])
+  }, [recordList, startMileage])
 
   if (!width || mileageData.length === 0) return null
 
@@ -51,7 +54,7 @@ const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: nu
 
   return (
     <div style={{ width: '100%', height: '260px' }}>
-      <F2Canvas pixelRatio={window.devicePixelRatio}>
+      <AnyCanvas pixelRatio={window.devicePixelRatio}>
         <Chart data={mileageData}>
           <Axis field="date" tickCount={5} />
           <Axis field="value" tickCount={5} />
@@ -67,7 +70,7 @@ const MonthlyMileage = ({ recordList, width }: { recordList: Record[]; width: nu
             range={[start, end]}
           />
         </Chart>
-      </F2Canvas >
+      </AnyCanvas >
     </div>
   )
 }
