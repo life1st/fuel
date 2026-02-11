@@ -61,9 +61,12 @@ const useRecordStore = create<RecordState>()(
       },
       mergeRecordData: (list: Record[]) => {
         set((state) => ({
+          demoMode: false,
           recordList: [
             ...new Map(
-              [...state.recordList, ...list].map((item) => [item.id, item])
+              [...(state.demoMode ? [] : state.recordList), ...list].map(
+                (item) => [item.id, item]
+              )
             ).values(),
           ],
         }));

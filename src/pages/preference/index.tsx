@@ -158,6 +158,13 @@ const Preference: FC = () => {
       <div className="version-info">
         {window.location.hostname}©{new Date().getFullYear()} v{pkgJson.version}
       </div>
+      <div className="recommend-tools">
+        <List className="preference-section">
+          <List.Item onClick={() => {
+            window.open('https://jjz.life1st.me')
+          }}>进京证排期工具</List.Item>
+        </List>
+      </div>
     </div>
   );
 };

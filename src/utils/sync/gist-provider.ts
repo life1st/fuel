@@ -16,6 +16,7 @@ class GistProvider {
           content: string;
         }
       >;
+      updated_at: string;
     }>(`https://api.github.com/gists/${gist_id}`, {
       headers,
     });

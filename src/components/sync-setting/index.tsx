@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useMemo } from "react";
 import { List, Modal, Form, Input, Toast } from "antd-mobile";
 import { QuestionCircleOutline } from "antd-mobile-icons";
 import useSettingStore, { GistConfig } from "@/store/setting-store";
@@ -6,9 +6,16 @@ import useRecordStore, { type Record } from "@/store/recordStore";
 import gistSync from "@/utils/sync/gist-provider";
 import "./style.scss";
 import dayjs from "dayjs";
+import updateLocale from 'dayjs/plugin/updateLocale';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/zh-cn';
 import { DEFAULT_VEHICLE_ID, DEFAULT_VEHICLE_NAME } from "@/utils/consts";
 import PlateInput from "@/components/plate-input";
 import PlateDisplay from "@/components/plate-display";
+
+dayjs.extend(relativeTime);
+dayjs.extend(updateLocale);
+dayjs.locale('zh-cn');
 
 const withLoading = async (fn: (...args: any) => Promise<boolean>) => {
   Toast.show({
@@ -42,23 +49,32 @@ const SyncSetting: FC = () => {
   } = useSettingStore();
   const { mergeRecordData, recordList } = useRecordStore();
   const [files, setFiles] = useState({});
+  const [gistUpdatedAt, setGistUpdatedAt] = useState('');
+
+  const lastRecordAt = useMemo(() => {
+
+    const lastRecord = recordList.sort((a, b) => dayjs(b.date).isBefore(dayjs(a.date)) ? -1 : 1)[0];
+    return dayjs(lastRecord?.date) || '';
+  }, [recordList]);
 
   const { token, gistId } = gistConfig ?? {};
 
   useEffect(() => {
     const fetchInit = async () => {
-      if (!token || !gistId) {
+      if (!token || !gistId || gistUpdatedAt) {
         return;
       }
       const response = await gistSync.get(gistId);
       const files = response.data.files;
+      const updated_at = response.data.updated_at;
       setFiles(files);
+      setGistUpdatedAt(updated_at);
     };
     if (token) {
       gistSync.setToken(token);
     }
-    void fetchInit();
-  }, [token, gistId]);
+    fetchInit();
+  }, []);
 
   const showGistConfigModal = () => {
     const handleSubmit = async () => {
@@ -80,7 +96,7 @@ const SyncSetting: FC = () => {
       }
       setGistConfig(values);
     };
-    void Modal.confirm({
+    Modal.confirm({
       title: "Gist 同步设置",
       content: (
         <Form
@@ -221,6 +237,29 @@ const SyncSetting: FC = () => {
     });
   };
 
+  const renderSyncDesc = () => {
+    if (!gistId || !token) {
+      return '';
+    }
+    let desc = '';
+    if (!syncTime) {
+      desc = '未同步过';
+    } else {
+      desc = `${dayjs(syncTime).fromNow()}同步过`
+    }
+
+    const recordNewerThanCloud = dayjs(lastRecordAt).isAfter(dayjs(gistUpdatedAt));
+    if (recordNewerThanCloud) {
+      desc += ' - ⚠️本地有更新';
+    } else if (dayjs(gistUpdatedAt).isBefore(syncTime)) {
+      desc += ' - ✅已是最新';
+    } else if (dayjs(gistUpdatedAt).isAfter(syncTime)) {
+      desc += ' - ⚠️云端有更新';
+    }
+
+    return desc;
+  };
+
   return (
     <>
       <List.Item
@@ -228,11 +267,7 @@ const SyncSetting: FC = () => {
           handleShowSyncModal();
         }}
         extra={gistConfig ? "" : "未配置"}
-        description={
-          syncTime
-            ? `上次同步时间: ${dayjs(syncTime).format("YY/MM/DD - HH:mm")}`
-            : ""
-        }
+        description={renderSyncDesc()}
       >
         Gist 同步
       </List.Item>

@@ -37,7 +37,7 @@ const EnergyRecordItem: FC<EnergyRecordItemProps> = (props) => {
   const amount = electric || oil;
 
   const goEdit = () => {
-    void navi(`/record/${String(id)}`);
+    navi(`/record/${String(id)}`);
   };
 
   return (
