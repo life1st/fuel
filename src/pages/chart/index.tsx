@@ -3,7 +3,9 @@ import { Chart, Line, Axis, Tooltip, Legend, ScrollBar } from '@antv/f2'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import useRecordStore, { type Record } from '@/store/recordStore'
-import { Segmented } from 'antd-mobile'
+import useSettingStore from '@/store/setting-store'
+import { Segmented, Toast } from 'antd-mobile'
+import { InformationCircleOutline } from 'antd-mobile-icons'
 import StatisticsCard from '@/components/statistics-card'
 import PowerNums from './components/power-nums'
 import MonthlyMileage from './components/monthly-mileage'
@@ -88,13 +90,26 @@ const ChargingChart = ({ recordList, width }: { recordList: Record[]; width: num
 }
 
 const CostPer100KMChart = ({ recordList, width, startMileage }: { recordList: Record[]; width: number; startMileage: number }) => {
+  const { isOptimizeCost } = useSettingStore();
+
   const data = useMemo(() => {
     const result: { range: number; value: number }[] = []
     let costCount = 0
     const sortedList = [...recordList].sort((a, b) => a.kilometerOfDisplay - b.kilometerOfDisplay)
 
-    sortedList.forEach(({ kilometerOfDisplay, cost }) => {
-      costCount += Number(cost)
+    let excludedId: number | string = -1;
+    if (isOptimizeCost) {
+      const timeSortedList = [...recordList].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const lastRec = timeSortedList[timeSortedList.length - 1];
+      if (lastRec?.type === 'refueling') {
+        excludedId = lastRec.id;
+      }
+    }
+
+    sortedList.forEach(({ kilometerOfDisplay, cost, id }) => {
+      if (id !== excludedId) {
+        costCount += Number(cost)
+      }
       const relativeKm = kilometerOfDisplay - startMileage
       if (relativeKm >= result.length * 100) {
         const value = Number(((costCount / relativeKm) * 100).toFixed(2))
@@ -108,7 +123,7 @@ const CostPer100KMChart = ({ recordList, width, startMileage }: { recordList: Re
       }
     })
     return result.filter((r) => r.value < 100)
-  }, [recordList, startMileage])
+  }, [recordList, startMileage, isOptimizeCost])
 
   if (!width || data.length === 0) return null
 
@@ -143,6 +158,7 @@ const CostPer100KMChart = ({ recordList, width, startMileage }: { recordList: Re
 
 const ChartV2Page = () => {
   const { recordList } = useRecordStore()
+  const { isOptimizeCost } = useSettingStore()
   const chartRef = useRef<HTMLDivElement>(null)
   const [width, setWidth] = useState<number>(0)
   const [filterType, setFilterType] = useState<'all' | 'current'>('all')
@@ -206,7 +222,15 @@ const ChartV2Page = () => {
         <div className='chart-container'>
           <CostPer100KMChart recordList={filteredRecordList} width={width} startMileage={startMileage} />
         </div>
-        <p className='chart-legend'>每百公里平均费用</p>
+        <p className='chart-legend'>
+          每百公里平均费用
+          {isOptimizeCost && (
+            <InformationCircleOutline
+              style={{ marginLeft: 4, color: '#1890ff', verticalAlign: 'middle', cursor: 'pointer' }}
+              onClick={() => Toast.show({ content: '已开启优化计算', position: 'bottom' })}
+            />
+          )}
+        </p>
 
         <div className='chart-container'>
           <PowerNums recordList={filteredRecordList} width={width} />
@@ -221,7 +245,15 @@ const ChartV2Page = () => {
         <div className='chart-container'>
           <QuarterlyCost recordList={filteredRecordList} width={width} startMileage={startMileage} />
         </div>
-        <p className='chart-legend'>每季度均耗 (元/百公里)</p>
+        <p className='chart-legend'>
+          每季度均耗 (元/百公里)
+          {isOptimizeCost && (
+            <InformationCircleOutline
+              style={{ marginLeft: 4, color: '#1890ff', verticalAlign: 'middle', cursor: 'pointer' }}
+              onClick={() => Toast.show({ content: '已开启优化计算', position: 'bottom' })}
+            />
+          )}
+        </p>
       </div>
     </div>
   )

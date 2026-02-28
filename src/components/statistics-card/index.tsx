@@ -1,5 +1,8 @@
 import { FC, useMemo } from 'react';
+import { Toast } from 'antd-mobile';
+import { InformationCircleOutline } from 'antd-mobile-icons';
 import useRecordStore, { Record } from '@/store/recordStore';
+import useSettingStore from '@/store/setting-store';
 import './style.scss';
 
 interface StatisticsCardProps {
@@ -9,6 +12,7 @@ interface StatisticsCardProps {
 
 const StatisticsCard: FC<StatisticsCardProps> = ({ recordList: propsRecordList, startMileage }) => {
   const { recordList: storeRecordList } = useRecordStore();
+  const { isOptimizeCost } = useSettingStore();
   const recordList = propsRecordList || storeRecordList;
 
   const statistics = useMemo(() => {
@@ -20,8 +24,13 @@ const StatisticsCard: FC<StatisticsCardProps> = ({ recordList: propsRecordList, 
     const latestOdo = lastRecord?.kilometerOfDisplay ?? 0;
     const totalKilometers = startMileage !== undefined ? Math.max(0, latestOdo - startMileage) : latestOdo;
 
+    let recordsForStats = sortedRecords;
+    if (isOptimizeCost && lastRecord?.type === 'refueling') {
+      recordsForStats = sortedRecords.slice(0, -1);
+    }
+
     // 分别统计加油和充电的总花费
-    const statisticsNums = recordList.reduce((acc: any, record: Record) => {
+    const statisticsNums = recordsForStats.reduce((acc: any, record: Record) => {
         if (record.type === 'refueling') {
           acc.refuelingCost += Number(record.cost);
 
@@ -39,7 +48,7 @@ const StatisticsCard: FC<StatisticsCardProps> = ({ recordList: propsRecordList, 
       ...statisticsNums,
       totalKilometers,
     };
-  }, [recordList]);
+  }, [recordList, isOptimizeCost, startMileage]);
 
   // 计算每百公里平均花费
   const averageCostPer100km = useMemo(() => {
@@ -55,7 +64,15 @@ const StatisticsCard: FC<StatisticsCardProps> = ({ recordList: propsRecordList, 
       <h3 className="statistics-title">能源消耗统计</h3>
       <div className="statistics-content">
         <div className="statistics-item">
-          <span className="label">每百公里平均花费</span>
+          <span className="label">
+            每百公里平均花费
+            {isOptimizeCost && (
+              <InformationCircleOutline
+                style={{ marginLeft: 4, color: '#1890ff' }}
+                onClick={() => Toast.show({ content: '已开启优化计算', position: 'bottom' })}
+              />
+            )}
+          </span>
           <span className="value">{averageCostPer100km.toFixed(2)} 元</span>
         </div>
         <div className="statistics-details">
