@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="240" fill="#2B5AAA"/>
+  
+  <!-- 油滴形状 -->
+  <path d="M256 80C256 80 320 160 320 240C320 320 288 352 256 352C224 352 192 320 192 240C192 160 256 80 256 80Z" fill="#FFFFFF"/>
+  
+  <!-- 新能源闪电符号 -->
+  <path d="M256 160L288 256H256L272 352L224 192H256L256 160Z" fill="#7AB775"/>
+</svg> 
