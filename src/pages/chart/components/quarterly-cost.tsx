@@ -3,15 +3,25 @@ import { Chart, Line, Interval, Axis, Tooltip, Legend, ScrollBar } from '@antv/f
 import F2Canvas from '@antv/f2-react'
 import dayjs from 'dayjs'
 import { type Record } from '@/store/recordStore'
+import useSettingStore from '@/store/setting-store'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AnyCanvas = F2Canvas as any
 
 const QuarterlyCost = ({ recordList, width, startMileage }: { recordList: Record[]; width: number; startMileage: number }) => {
+  const { isOptimizeCost } = useSettingStore();
 
   const { barData, lineData } = useMemo(() => {
     const sortedList = [...recordList].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf())
     
+    let excludedId: number | string = -1;
+    if (isOptimizeCost) {
+      const lastRec = sortedList[sortedList.length - 1];
+      if (lastRec?.type === 'refueling') {
+        excludedId = lastRec.id;
+      }
+    }
+
     // 按季度分组记录
     const quarterGroups = sortedList.reduce<{ [key: string]: Record[] }>((acc, r) => {
       const q = `${dayjs(r.date).year()}-Q${Math.floor(dayjs(r.date).month() / 3) + 1}`
@@ -24,7 +34,12 @@ const QuarterlyCost = ({ recordList, width, startMileage }: { recordList: Record
     const rawStats: any[] = []
     Object.keys(quarterGroups).sort().forEach(qKey => {
       const qRecords = quarterGroups[qKey]
-      const sumCost = qRecords.reduce((s, r) => s + Number(r.cost), 0)
+      const sumCost = qRecords.reduce((s, r) => {
+        if (r.id === excludedId) {
+          return s;
+        }
+        return s + Number(r.cost);
+      }, 0)
       const lastRec = qRecords[qRecords.length - 1]
       
       const firstRecIdx = sortedList.indexOf(qRecords[0])
@@ -79,7 +94,7 @@ const QuarterlyCost = ({ recordList, width, startMileage }: { recordList: Record
     })
 
     return { barData: bData, lineData: lData }
-  }, [recordList, startMileage])
+  }, [recordList, startMileage, isOptimizeCost])
 
   if (!width || barData.length === 0) return null
 

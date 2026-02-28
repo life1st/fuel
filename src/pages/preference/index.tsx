@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { List, Modal, Button, TextArea, Toast } from "antd-mobile";
+import { List, Modal, Button, TextArea, Toast, Switch } from "antd-mobile";
 import dayjs from "dayjs";
 import Navigate from "@/components/navigate";
 import useRecordStore, { Record } from "@/store/recordStore";
@@ -12,7 +12,7 @@ import "./style.scss";
 const Preference: FC = () => {
   const navi = useNavigate();
   const { recordList, setRecordData } = useRecordStore();
-  const { vehicleId } = useSettingStore();
+  const { vehicleId, isOptimizeCost, setOptimizeCost } = useSettingStore();
   const [importVisible, setImportVisible] = useState(false);
   const [importText, setImportText] = useState("");
 
@@ -144,6 +144,17 @@ const Preference: FC = () => {
       <div className="preference-content">
         <List className="preference-section">
           <SyncSetting />
+          <List.Item
+            description={isOptimizeCost ? '排除最后一笔加油记录，使平均值更准确' : ''}
+            extra={
+              <Switch
+                checked={isOptimizeCost}
+                onChange={setOptimizeCost}
+              />
+            }
+          >
+            优化费用计算
+          </List.Item>
           <List.Item onClick={handleExport}>导出数据</List.Item>
           <List.Item
             onClick={() => {
