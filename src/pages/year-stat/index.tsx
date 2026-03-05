@@ -139,6 +139,7 @@ const YearStat: FC = () => {
         let maxPriceRecord: any = null;
         let minPriceRecord: any = null;
         let maxVolumeRecord: any = null;
+        let minVolumeRecord: any = null;
         let totalUnitPrice = 0;
         const fuelPriceTrend: { date: number, price: number }[] = [];
 
@@ -175,6 +176,9 @@ const YearStat: FC = () => {
             if (!maxVolumeRecord || volume > Number(maxVolumeRecord.oil)) {
                 maxVolumeRecord = transformRecord(record);
             }
+            if (!minVolumeRecord || volume < Number(minVolumeRecord.oil)) {
+                minVolumeRecord = transformRecord(record);
+            }
         });
 
         const avgFuelPrice = refuelingRecords.length > 0 ? totalUnitPrice / refuelingRecords.length : 0;
@@ -210,6 +214,48 @@ const YearStat: FC = () => {
             }
         }
 
+        // Calculate Trimmed Mean Fuel Amount (Remove top and bottom 10%)
+        let avgOilTrimmed = 0;
+        if (refuelingRecords.length > 0) {
+            const oilValues = refuelingRecords.map(r => Number(r.oil)).sort((a, b) => a - b);
+            const countToRemove = Math.floor(oilValues.length * 0.1);
+            const trimmedValues = oilValues.slice(countToRemove, oilValues.length - countToRemove);
+
+            if (trimmedValues.length > 0) {
+                const sum = trimmedValues.reduce((a, b) => a + b, 0);
+                avgOilTrimmed = Number((sum / trimmedValues.length).toFixed(2));
+            } else if (oilValues.length > 0) {
+                // Fallback for very few records
+                const sum = oilValues.reduce((a, b) => a + b, 0);
+                avgOilTrimmed = Number((sum / oilValues.length).toFixed(2));
+            }
+        }
+
+        // Calculate Average Refueling Interval (Days & Mileage)
+        let avgRefuelingInterval = 0;
+        let avgRefuelingMileageInterval = 0;
+        if (refuelingRecords.length > 1) {
+            // refuelingRecords is already sorted by date (line 155)
+            let totalDays = 0;
+            let totalMileageRefuel = 0;
+            for (let i = 1; i < refuelingRecords.length; i++) {
+                const prevRecord = refuelingRecords[i - 1];
+                const currRecord = refuelingRecords[i];
+
+                const prevDate = dayjs(prevRecord.date);
+                const currDate = dayjs(currRecord.date);
+                totalDays += currDate.diff(prevDate, 'day');
+
+                const prevKm = Number(prevRecord.kilometerOfDisplay) || 0;
+                const currKm = Number(currRecord.kilometerOfDisplay) || 0;
+                if (currKm > prevKm) {
+                    totalMileageRefuel += (currKm - prevKm);
+                }
+            }
+            avgRefuelingInterval = Number((totalDays / (refuelingRecords.length - 1)).toFixed(1));
+            avgRefuelingMileageInterval = Math.round(totalMileageRefuel / (refuelingRecords.length - 1));
+        }
+
         return {
             year: targetYear,
             totalCost,
@@ -222,11 +268,15 @@ const YearStat: FC = () => {
             maxPriceRecord: maxPriceRecord ? { ...maxPriceRecord, unitPrice: getUnitPrice(maxPriceRecord) } : null,
             minPriceRecord: minPriceRecord ? { ...minPriceRecord, unitPrice: getUnitPrice(minPriceRecord) } : null,
             maxVolumeRecord: maxVolumeRecord ? { ...maxVolumeRecord, unitPrice: getUnitPrice(maxVolumeRecord) } : null,
+            minVolumeRecord: minVolumeRecord ? { ...minVolumeRecord, unitPrice: getUnitPrice(minVolumeRecord) } : null,
             maxElectricRecord,
             estimatedCapacity,
             electricValues, // Return the sorted array for the chart
             avgFuelPrice,
-            fuelPriceTrend
+            fuelPriceTrend,
+            avgOilTrimmed,
+            avgRefuelingInterval,
+            avgRefuelingMileageInterval
         };
     }, [recordList, year, shareDataStr]);
 
@@ -324,28 +374,41 @@ const YearStat: FC = () => {
                     </div> */}
                     {statData.maxPriceRecord && (
                         <div className="record-row">
-                            <div className="row-title">单价最高</div>
+                            <div className="row-title">单价最高（{dayjs(statData.maxPriceRecord.date).format('MM-DD')}）</div>
                             <div className="row-content">
                                 <div className="highlight-value">¥{statData.maxPriceRecord.unitPrice.toFixed(2)}/L</div>
-                                <div className="date">{dayjs(statData.maxPriceRecord.date).format('MM-DD')}</div>
                             </div>
                         </div>
                     )}
                     {statData.minPriceRecord && (
                         <div className="record-row">
-                            <div className="row-title">单价最低</div>
+                            <div className="row-title">单价最低（{dayjs(statData.minPriceRecord.date).format('MM-DD')}）</div>
                             <div className="row-content">
                                 <div className="highlight-value">¥{statData.minPriceRecord.unitPrice.toFixed(2)}/L</div>
-                                <div className="date">{dayjs(statData.minPriceRecord.date).format('MM-DD')}</div>
                             </div>
                         </div>
                     )}
-                    {statData.maxVolumeRecord && (
-                        <div className="record-row">
-                            <div className="row-title">单次加油最多</div>
+                    <div className="record-row">
+                        <div className="row-title">平均加油量</div>
+                        <div className="row-content">
+                            <div className="highlight-value">{statData.avgOilTrimmed.toFixed(2)} L</div>
+                            {(statData.maxVolumeRecord || statData.minVolumeRecord) && (
+                                <div className="date" style={{ whiteSpace: 'nowrap' }}>
+                                    {statData.maxVolumeRecord && `最多: ${Number(statData.maxVolumeRecord.oil).toFixed(2)}L (${dayjs(statData.maxVolumeRecord.date).format('MM-DD')})`}
+                                    {statData.maxVolumeRecord && statData.minVolumeRecord && ' / '}
+                                    {statData.minVolumeRecord && `最少: ${Number(statData.minVolumeRecord.oil).toFixed(2)}L (${dayjs(statData.minVolumeRecord.date).format('MM-DD')})`}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {statData.avgRefuelingInterval > 0 && (
+                        <div className="record-row" id="refueling-interval-row">
+                            <div className="row-title">平均间隔</div>
                             <div className="row-content">
-                                <div className="highlight-value">{Number(statData.maxVolumeRecord.oil).toFixed(2)} L</div>
-                                <div className="date">¥{statData.maxVolumeRecord.unitPrice.toFixed(2)}/L · {dayjs(statData.maxVolumeRecord.date).format('MM-DD')}</div>
+                                <div className="highlight-value">
+                                    {statData.avgRefuelingInterval} 天
+                                    {statData.avgRefuelingMileageInterval > 0 && ` / ${statData.avgRefuelingMileageInterval} km`}
+                                </div>
                             </div>
                         </div>
                     )}
@@ -364,7 +427,7 @@ const YearStat: FC = () => {
                     <Card title="充电报告" className="stat-card">
                         {statData.maxElectricRecord && (
                             <div className="record-row">
-                                <div className="row-title">单次充电最多</div>
+                                <div className="row-title">单次最多</div>
                                 <div className="row-content">
                                     <div className="highlight-value">{Number(statData.maxElectricRecord.electric).toFixed(2)} kWh</div>
                                     <div className="date">{dayjs(statData.maxElectricRecord.date).format('MM-DD')}</div>
