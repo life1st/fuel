@@ -122,6 +122,7 @@ const YearStat: FC = () => {
         const chargingRecords = yearRecords.filter(r => r.type === 'charging');
 
         // Calculate Totals
+        const totalRefuelingCost = refuelingRecords.reduce((sum, r) => sum + Number(r.cost), 0);
         const totalCost = yearRecords.reduce((sum, r) => sum + Number(r.cost), 0);
         const totalOil = refuelingRecords.reduce((sum, r) => sum + Number(r.oil), 0);
         const totalElectric = Number(chargingRecords.reduce((sum, r) => sum + Number(r.electric), 0).toFixed(2));
@@ -181,6 +182,7 @@ const YearStat: FC = () => {
             }
         });
 
+        const avgFuelPriceReal = totalOil > 0 ? totalRefuelingCost / totalOil : 0;
         const avgFuelPrice = refuelingRecords.length > 0 ? totalUnitPrice / refuelingRecords.length : 0;
 
         // Charging Analysis
@@ -198,12 +200,9 @@ const YearStat: FC = () => {
         });
 
         // Estimate Battery Capacity
-        // Algo: Remove bottom 20% of data, take average of remainder, multiply by 1.1
         let estimatedCapacity = 0;
         if (electricValues.length > 0) {
-            // Sort ascending
             electricValues.sort((a, b) => a - b);
-            // Calculate index to start slice (remove bottom 20%)
             const startIndex = Math.floor(electricValues.length * 0.2);
             const validValues = electricValues.slice(startIndex);
 
@@ -214,43 +213,52 @@ const YearStat: FC = () => {
             }
         }
 
-        // Calculate Trimmed Mean Fuel Amount (Remove top and bottom 10%)
+        // Calculate Average Charging Interval (Days & Mileage)
+        let avgChargingInterval = 0;
+        let avgChargingMileageInterval = 0;
+        if (chargingRecords.length > 1) {
+            const sortedChargingRecords = [...chargingRecords].sort((a, b) => dayjs(a.date).valueOf() - dayjs(b.date).valueOf());
+            let totalDaysCharging = 0;
+            let totalMileageCharging = 0;
+            for (let i = 1; i < sortedChargingRecords.length; i++) {
+                const prevRecord = sortedChargingRecords[i - 1];
+                const currRecord = sortedChargingRecords[i];
+                const prevDate = dayjs(prevRecord.date);
+                const currDate = dayjs(currRecord.date);
+                totalDaysCharging += currDate.diff(prevDate, 'day');
+                const prevKm = Number(prevRecord.kilometerOfDisplay) || 0;
+                const currKm = Number(currRecord.kilometerOfDisplay) || 0;
+                totalMileageCharging += (currKm - prevKm);
+            }
+            avgChargingInterval = Number((totalDaysCharging / (chargingRecords.length - 1)).toFixed(1));
+            avgChargingMileageInterval = Math.round(totalMileageCharging / (chargingRecords.length - 1));
+        }
+
+        // Calculate Trimmed Mean Fuel Amount
         let avgOilTrimmed = 0;
         if (refuelingRecords.length > 0) {
             const oilValues = refuelingRecords.map(r => Number(r.oil)).sort((a, b) => a - b);
             const countToRemove = Math.floor(oilValues.length * 0.1);
             const trimmedValues = oilValues.slice(countToRemove, oilValues.length - countToRemove);
-
             if (trimmedValues.length > 0) {
                 const sum = trimmedValues.reduce((a, b) => a + b, 0);
                 avgOilTrimmed = Number((sum / trimmedValues.length).toFixed(2));
             } else if (oilValues.length > 0) {
-                // Fallback for very few records
-                const sum = oilValues.reduce((a, b) => a + b, 0);
-                avgOilTrimmed = Number((sum / oilValues.length).toFixed(2));
+                avgOilTrimmed = Number((oilValues.reduce((a, b) => a + b, 0) / oilValues.length).toFixed(2));
             }
         }
 
-        // Calculate Average Refueling Interval (Days & Mileage)
+        // Calculate Average Refueling Interval
         let avgRefuelingInterval = 0;
         let avgRefuelingMileageInterval = 0;
         if (refuelingRecords.length > 1) {
-            // refuelingRecords is already sorted by date (line 155)
             let totalDays = 0;
             let totalMileageRefuel = 0;
             for (let i = 1; i < refuelingRecords.length; i++) {
                 const prevRecord = refuelingRecords[i - 1];
                 const currRecord = refuelingRecords[i];
-
-                const prevDate = dayjs(prevRecord.date);
-                const currDate = dayjs(currRecord.date);
-                totalDays += currDate.diff(prevDate, 'day');
-
-                const prevKm = Number(prevRecord.kilometerOfDisplay) || 0;
-                const currKm = Number(currRecord.kilometerOfDisplay) || 0;
-                if (currKm > prevKm) {
-                    totalMileageRefuel += (currKm - prevKm);
-                }
+                totalDays += dayjs(currRecord.date).diff(dayjs(prevRecord.date), 'day');
+                totalMileageRefuel += (Number(currRecord.kilometerOfDisplay) - Number(prevRecord.kilometerOfDisplay));
             }
             avgRefuelingInterval = Number((totalDays / (refuelingRecords.length - 1)).toFixed(1));
             avgRefuelingMileageInterval = Math.round(totalMileageRefuel / (refuelingRecords.length - 1));
@@ -271,12 +279,15 @@ const YearStat: FC = () => {
             minVolumeRecord: minVolumeRecord ? { ...minVolumeRecord, unitPrice: getUnitPrice(minVolumeRecord) } : null,
             maxElectricRecord,
             estimatedCapacity,
-            electricValues, // Return the sorted array for the chart
+            electricValues,
             avgFuelPrice,
+            avgFuelPriceReal,
             fuelPriceTrend,
             avgOilTrimmed,
             avgRefuelingInterval,
-            avgRefuelingMileageInterval
+            avgRefuelingMileageInterval,
+            avgChargingInterval,
+            avgChargingMileageInterval
         };
     }, [recordList, year, shareDataStr]);
 
@@ -374,17 +385,13 @@ const YearStat: FC = () => {
                     </div> */}
                     {statData.maxPriceRecord && (
                         <div className="record-row">
-                            <div className="row-title">单价最高（{dayjs(statData.maxPriceRecord.date).format('MM-DD')}）</div>
+                            <div className="row-title">平均价格</div>
                             <div className="row-content">
-                                <div className="highlight-value">¥{statData.maxPriceRecord.unitPrice.toFixed(2)}/L</div>
-                            </div>
-                        </div>
-                    )}
-                    {statData.minPriceRecord && (
-                        <div className="record-row">
-                            <div className="row-title">单价最低（{dayjs(statData.minPriceRecord.date).format('MM-DD')}）</div>
-                            <div className="row-content">
-                                <div className="highlight-value">¥{statData.minPriceRecord.unitPrice.toFixed(2)}/L</div>
+                                <div className="highlight-value">¥{statData.avgFuelPriceReal.toFixed(2)}/L</div>
+                                <div className="date">
+                                    {statData.maxPriceRecord && `最高:¥${statData.maxPriceRecord.unitPrice.toFixed(2)}/L（${dayjs(statData.maxPriceRecord.date).format('MM-DD')}）`}
+                                    {statData.minPriceRecord && `最低:¥${statData.minPriceRecord.unitPrice.toFixed(2)}/L（${dayjs(statData.minPriceRecord.date).format('MM-DD')}）`}
+                                </div>
                             </div>
                         </div>
                     )}
@@ -443,7 +450,17 @@ const YearStat: FC = () => {
                                 </div>
                             </div>
                         )}
-
+                        {statData.avgChargingInterval > 0 && (
+                            <div className="record-row">
+                                <div className="row-title">平均充电间隔</div>
+                                <div className="row-content">
+                                    <div className="highlight-value">
+                                        {statData.avgChargingInterval} 天
+                                        {statData.avgChargingMileageInterval > 0 && ` / ${statData.avgChargingMileageInterval} km`}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         {statData.electricValues.length > 0 && (
                             <div>
                                 <ChargingDistributionChart data={statData.electricValues} />
