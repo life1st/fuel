@@ -21,6 +21,11 @@ export interface Record {
   cost: number;
   kilometerOfDisplay: number;
   date: number | string;
+  location?: {
+    latitude: number;
+    longitude: number;
+    reverseName?: string;
+  };
 }
 
 const useRecordStore = create<RecordState>()(
