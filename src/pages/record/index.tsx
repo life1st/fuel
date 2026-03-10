@@ -1,17 +1,16 @@
-import { FC, useEffect, useState, useRef } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Selector, Input, Button, Toast } from 'antd-mobile'
 import cls from 'classnames'
 import CalendarPicker from './calendar-picker'
 import useRecordStore, { Record as IRecord } from '@/store/recordStore'
+import useLocation from '@/hooks/useLocation'
 import Navigate from '@/components/navigate'
 import './index.scss'
 
 const Record: FC = () => {
   const navigate = useNavigate()
   const params = useParams()
-  const locationPromiseRef = useRef<Promise<{ latitude: number; longitude: number } | null> | null>(null)
-  const reverseNamePromiseRef = useRef<Promise<string | undefined> | null>(null)
   const [data, setData] = useState<IRecord>({
     id: 0,
     type: 'charging',
@@ -23,63 +22,14 @@ const Record: FC = () => {
   })
   const { setRecordData, removeRecordById, updateRecordById, recordList } = useRecordStore();
 
+  const { location, locationPromiseRef, locationReadyPromiseRef } = useLocation(!params.id);
+
   useEffect(() => {
     if (params.id) {
       const record = recordList.find(r => Number(r.id) === Number(params.id))
       if (record) {
         setData(record)
       }
-    } else if (!locationPromiseRef.current) {
-      locationPromiseRef.current = new Promise((resolveLocation) => {
-        if (!navigator.geolocation) {
-          return resolveLocation(null);
-        }
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            resolveLocation({ latitude, longitude });
-            setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: prev.location?.reverseName } }));
-
-            reverseNamePromiseRef.current = new Promise(async (resolveName) => {
-              try {
-                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-                if (res.ok) {
-                  const geoData = await res.json();
-                  console.log(geoData)
-                  if (geoData && geoData.address) {
-                    const address = geoData.address;
-                    // Try to get parts like: Street/Suburb -> City/District -> State/Province
-                    const parts = [
-                      address.road || address.pedestrian || address.street || address.suburb || address.village || address.neighbourhood,
-                      address.city || address.town || address.county || address.district,
-                      address.state || address.province || address['ISO3166-2-lvl4']
-                    ].filter(Boolean);
-                    
-                    if (parts.length === 3) {
-                      const formattedName = parts.join('，');
-                      const rName = formattedName.length > 16 ? formattedName.substring(0, 16) + '...' : formattedName;
-                      setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: rName } }));
-                      return resolveName(rName);
-                    } else if (geoData.display_name) {
-                      const rName = geoData.display_name.substring(0, 16);
-                      setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: rName } }));
-                      return resolveName(rName);
-                    }
-                  }
-                }
-              } catch (e) {
-                console.error('Failed to reverse geocode', e);
-              }
-              resolveName(undefined);
-            });
-          },
-          (error) => {
-            console.error('Failed to get location', error);
-            resolveLocation(null);
-          },
-          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-        );
-      });
     }
   }, [params.id])
 
@@ -112,11 +62,10 @@ const Record: FC = () => {
           const locationCoords = await locationPromiseRef.current;
           if (!locationCoords) return null;
 
-          let reverseName: string | undefined = undefined;
-          if (reverseNamePromiseRef.current) {
-            reverseName = await reverseNamePromiseRef.current;
+          if (locationReadyPromiseRef.current) {
+            return await locationReadyPromiseRef.current;
           }
-          return { ...locationCoords, reverseName };
+          return locationCoords;
         })();
 
         const timeoutPromise = new Promise((resolve) => {
@@ -150,6 +99,8 @@ const Record: FC = () => {
       void navigate(-1);
     }
   };
+
+  const displayLocation = params.id ? data.location : location;
 
   const formData = [
     {
@@ -260,16 +211,16 @@ const Record: FC = () => {
               </div>
             </div>
           ))}
-          <div className="record-form-item location-info" style={{ height: 'auto', padding: '10px 12px', alignItems: 'flex-start', borderTop: '1px dashed #eee' }}>
-            <div className="record-form-item-label" style={{ width: '30%' }}>位置：</div>
-            {data.location ? (
+          {displayLocation && (
+            <div className="record-form-item location-info" style={{ height: 'auto', padding: '10px 12px', alignItems: 'flex-start', borderTop: '1px dashed #eee' }}>
+              <div className="record-form-item-label" style={{ width: '30%' }}>位置：</div>
               <div className="record-form-item-input" style={{ width: '70%', borderBottom: 'none', display: 'flex', flexDirection: 'column', gap: '4px', color: '#666', fontSize: '14px' }}>
-                <div>经度：{data.location.longitude.toFixed(6)}</div>
-                <div>纬度：{data.location.latitude.toFixed(6)}</div>
-                <div>{data.location.reverseName}</div>
+                <div>经度：{displayLocation.longitude.toFixed(6)}</div>
+                <div>纬度：{displayLocation.latitude.toFixed(6)}</div>
+                <div>{displayLocation.reverseName || '-'}</div>
               </div>
-            ) : '-'}
-          </div>
+            </div>
+          )}
         </div>
         <Button
           type="submit"
