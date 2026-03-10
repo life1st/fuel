@@ -1,6 +1,6 @@
 {
   "name": "fuel",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,10 +16,10 @@
     "@antv/f2-react": "^5.14.0",
     "antd-mobile": "^5.39.0",
     "antd-mobile-icons": "^0.3.0",
-    "axios": "^1.8.3",
+    "axios": "^1.13.5",
     "classnames": "^2.5.1",
     "copy-to-clipboard": "^3.3.3",
-    "darkreader": "^4.9.105",
+    "darkreader": "^4.9.117",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -44,7 +44,7 @@
     "sass": "^1.85.1",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.2.2",
+    "vite": "^6.4.1",
     "vite-bundle-analyzer": "^0.18.0",
     "vite-plugin-pwa": "^0.21.2",
     "vitest": "^3.0.9"
