@@ -45,10 +45,26 @@ const Record: FC = () => {
                 const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
                 if (res.ok) {
                   const geoData = await res.json();
-                  if (geoData && geoData.display_name) {
-                    const rName = geoData.display_name.substring(0, 16);
-                    setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: rName } }));
-                    return resolveName(rName);
+                  console.log(geoData)
+                  if (geoData && geoData.address) {
+                    const address = geoData.address;
+                    // Try to get parts like: Street/Suburb -> City/District -> State/Province
+                    const parts = [
+                      address.road || address.pedestrian || address.street || address.suburb || address.village || address.neighbourhood,
+                      address.city || address.town || address.county || address.district,
+                      address.state || address.province || address['ISO3166-2-lvl4']
+                    ].filter(Boolean);
+                    
+                    if (parts.length === 3) {
+                      const formattedName = parts.join('，');
+                      const rName = formattedName.length > 16 ? formattedName.substring(0, 16) + '...' : formattedName;
+                      setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: rName } }));
+                      return resolveName(rName);
+                    } else if (geoData.display_name) {
+                      const rName = geoData.display_name.substring(0, 16);
+                      setData(prev => ({ ...prev, location: { latitude, longitude, reverseName: rName } }));
+                      return resolveName(rName);
+                    }
                   }
                 }
               } catch (e) {
