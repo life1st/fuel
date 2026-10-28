@@ -1,7 +1,7 @@
 @use "sass:color";
 
 .float-button {
-  position: fixed;
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,12 +35,12 @@
   }
 
   &.bottom-left {
-    bottom: 24px;
+    bottom: calc(100% + 12px);
     left: 24px;
   }
 
   &.bottom-right {
-    bottom: calc(72px + var(--safe-area-bottom));
+    bottom: calc(100% + 12px);
     right: 24px;
   }
 

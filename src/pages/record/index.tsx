@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Selector, Input, Button } from 'antd-mobile'
+import { Selector, Input, Button, Toast } from 'antd-mobile'
 import cls from 'classnames'
 import CalendarPicker from './calendar-picker'
 import useRecordStore, { Record as IRecord } from '@/store/recordStore'
+import useLocation from '@/hooks/useLocation'
 import Navigate from '@/components/navigate'
 import './index.scss'
 
@@ -20,6 +21,8 @@ const Record: FC = () => {
     date: Date.now(),
   })
   const { setRecordData, removeRecordById, updateRecordById, recordList } = useRecordStore();
+
+  const { location, locationPromiseRef, locationReadyPromiseRef } = useLocation(!params.id);
 
   useEffect(() => {
     if (params.id) {
@@ -44,14 +47,60 @@ const Record: FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (params.id) {
       updateRecordById(Number(params.id), data);
+      void navigate(-1);
     } else {
-      setRecordData(data);
+      let finalData = { ...data };
+      if (locationPromiseRef.current) {
+
+        let toastHandler: ReturnType<typeof Toast.show> | null = null;
+        let isResolved = false;
+
+        const combinedPromise = (async () => {
+          const locationCoords = await locationPromiseRef.current;
+          if (!locationCoords) return null;
+
+          if (locationReadyPromiseRef.current) {
+            return await locationReadyPromiseRef.current;
+          }
+          return locationCoords;
+        })();
+
+        const timeoutPromise = new Promise((resolve) => {
+          setTimeout(() => {
+            if (!isResolved && !toastHandler) {
+              toastHandler = Toast.show({
+                icon: 'loading',
+                content: '正在获取位置...',
+                duration: 0,
+              });
+            }
+          }, 100);
+          setTimeout(() => resolve(null), 3000)
+        });
+
+        const locationResult = await Promise.race([
+          combinedPromise,
+          timeoutPromise
+        ]);
+
+        isResolved = true;
+        if (toastHandler) {
+          (toastHandler as any).close();
+        }
+
+        if (locationResult) {
+          finalData = { ...finalData, location: locationResult as any };
+        }
+      }
+      setRecordData(finalData);
+      void navigate(-1);
     }
-    void navigate(-1);
   };
+
+  const displayLocation = params.id ? data.location : location;
 
   const formData = [
     {
@@ -127,6 +176,10 @@ const Record: FC = () => {
               <div className="record-form-item-input">
                 {item.dataType === "select" ? (
                   <Selector
+                    className={cls("record-form-item-selector", {
+                      'charging': item.value === 'charging',
+                      'refueling': item.value === 'refueling',
+                    })}
                     options={item.data!.options}
                     value={[item.value as string]}
                     onChange={(array) => {
@@ -158,6 +211,16 @@ const Record: FC = () => {
               </div>
             </div>
           ))}
+          {displayLocation && (
+            <div className="record-form-item location-info" style={{ height: 'auto', padding: '10px 12px', alignItems: 'flex-start', borderTop: '1px dashed #eee' }}>
+              <div className="record-form-item-label" style={{ width: '30%' }}>位置：</div>
+              <div className="record-form-item-input" style={{ width: '70%', borderBottom: 'none', display: 'flex', flexDirection: 'column', gap: '4px', color: '#666', fontSize: '14px' }}>
+                <div>经度：{displayLocation.longitude.toFixed(6)}</div>
+                <div>纬度：{displayLocation.latitude.toFixed(6)}</div>
+                <div>{displayLocation.reverseName || '-'}</div>
+              </div>
+            </div>
+          )}
         </div>
         <Button
           type="submit"

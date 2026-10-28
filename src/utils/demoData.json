@@ -1,1 +1,614 @@
-[{"type":"refueling","oil":"25.75","electric":0,"cost":"184","kilometerOfDisplay":"25","date":"2025-02-09T06:00:00.000Z","id":1741661078190},{"type":"charging","oil":0,"electric":"14.3","cost":"15.7","kilometerOfDisplay":"80","date":"2025-02-09T08:00:00.000Z","id":1741661424353},{"type":"charging","oil":0,"electric":"13.3","cost":"17.3","kilometerOfDisplay":"270","date":"2025-02-15T11:00:00.000Z","id":1741662353910},{"type":"charging","oil":0,"electric":"16.6","cost":"18.5","kilometerOfDisplay":"522","date":"2025-02-22T08:00:00.000Z","id":1741662390394},{"type":"refueling","oil":"27","electric":0,"cost":"188","kilometerOfDisplay":"608","date":"2025-03-01T06:00:00.000Z","id":1741662505186},{"type":"charging","oil":0,"electric":"16.6","cost":"12","kilometerOfDisplay":"843","date":"2025-03-08T04:00:00.000Z","id":1741662624505}]
+[
+    {
+        "type": "refueling",
+        "oil": "25.75",
+        "electric": 0,
+        "cost": "184",
+        "kilometerOfDisplay": "25",
+        "date": "2025-02-09T06:00:00.000Z",
+        "id": 1741661078190
+    },
+    {
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.3",
+        "cost": "15.7",
+        "kilometerOfDisplay": "80",
+        "date": "2025-02-09T08:00:00.000Z",
+        "id": 1741661424353
+    },
+    {
+        "type": "charging",
+        "oil": 0,
+        "electric": "13.3",
+        "cost": "17.3",
+        "kilometerOfDisplay": "270",
+        "date": "2025-02-15T11:00:00.000Z",
+        "id": 1741662353910
+    },
+    {
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.6",
+        "cost": "18.5",
+        "kilometerOfDisplay": "522",
+        "date": "2025-02-22T08:00:00.000Z",
+        "id": 1741662390394
+    },
+    {
+        "type": "refueling",
+        "oil": "27",
+        "electric": 0,
+        "cost": "188",
+        "kilometerOfDisplay": "608",
+        "date": "2025-03-01T06:00:00.000Z",
+        "id": 1741662505186
+    },
+    {
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.6",
+        "cost": "12",
+        "kilometerOfDisplay": "843",
+        "date": "2025-03-08T04:00:00.000Z",
+        "id": 1741662624505
+    },
+    {
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.7",
+        "cost": "11.1",
+        "kilometerOfDisplay": "869",
+        "date": "2025-03-15T16:20:18.583Z",
+        "id": 1742055661756
+    },
+    {
+        "id": 1742485950795,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.3",
+        "cost": "15.8",
+        "kilometerOfDisplay": "904",
+        "date": 1742485935413
+    },
+    {
+        "id": 1742745361893,
+        "type": "charging",
+        "oil": 0,
+        "electric": "17.2",
+        "cost": "13",
+        "kilometerOfDisplay": "1105",
+        "date": 1742745324459
+    },
+    {
+        "id": 1742993654656,
+        "type": "refueling",
+        "oil": "27.4",
+        "electric": 0,
+        "cost": "188",
+        "kilometerOfDisplay": "1135",
+        "date": 1742993586542
+    },
+    {
+        "id": 1743176748689,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.15",
+        "cost": "10.7",
+        "kilometerOfDisplay": "1173",
+        "date": 1743176692253
+    },
+    {
+        "id": 1743852024263,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.7",
+        "cost": "13.3",
+        "kilometerOfDisplay": "1527",
+        "date": 1743851987704
+    },
+    {
+        "id": 1743947129337,
+        "type": "charging",
+        "oil": 0,
+        "electric": "5.47",
+        "cost": "5",
+        "kilometerOfDisplay": "1541",
+        "date": 1743947118070
+    },
+    {
+        "id": 1743947192091,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.3",
+        "cost": "12.3",
+        "kilometerOfDisplay": "1910",
+        "date": "Sun Apr 06 2025 23:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1744044689434,
+        "type": "refueling",
+        "oil": "26.7",
+        "electric": 0,
+        "cost": "187.7",
+        "kilometerOfDisplay": "1915",
+        "date": "Mon Apr 07 2025 22:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1746029019267,
+        "type": "charging",
+        "oil": 0,
+        "electric": "10.6",
+        "cost": "7.85",
+        "kilometerOfDisplay": "1984",
+        "date": 1746028978389
+    },
+    {
+        "id": 1746163787703,
+        "type": "refueling",
+        "oil": "31.35",
+        "electric": 0,
+        "cost": "183.6",
+        "kilometerOfDisplay": "2478",
+        "date": 1746163750284
+    },
+    {
+        "id": 1746349247102,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.4",
+        "cost": "13.38",
+        "kilometerOfDisplay": "3063",
+        "date": 1746349218191
+    },
+    {
+        "id": 1746442339303,
+        "type": "refueling",
+        "oil": "35.22",
+        "electric": 0,
+        "cost": "191.8",
+        "kilometerOfDisplay": "3511",
+        "date": 1746442299252
+    },
+    {
+        "id": 1746548389394,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.6",
+        "cost": "10.16",
+        "kilometerOfDisplay": "3511",
+        "date": 1746548359189
+    },
+    {
+        "id": 1747067390296,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.8",
+        "cost": "11.3",
+        "kilometerOfDisplay": "3785",
+        "date": 1747067340009
+    },
+    {
+        "id": 1748619775708,
+        "type": "refueling",
+        "oil": "43.42",
+        "electric": 0,
+        "cost": "262.74",
+        "kilometerOfDisplay": "3806",
+        "date": 1748619723354
+    },
+    {
+        "id": 1748781592640,
+        "type": "charging",
+        "oil": 0,
+        "electric": "12.9",
+        "cost": "18",
+        "kilometerOfDisplay": "4234",
+        "date": "Sat May 31 2025 20:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1748800280319,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.8",
+        "cost": "11.4",
+        "kilometerOfDisplay": "4234",
+        "date": 1748800178130
+    },
+    {
+        "id": 1750591811652,
+        "type": "refueling",
+        "oil": "32.9",
+        "electric": 0,
+        "cost": "200",
+        "kilometerOfDisplay": "4864",
+        "date": 1750591794707
+    },
+    {
+        "id": 1750770116432,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.4",
+        "cost": "9.8",
+        "kilometerOfDisplay": "4900",
+        "date": 1750770027958
+    },
+    {
+        "id": 1750781311089,
+        "type": "charging",
+        "oil": 0,
+        "electric": "18.25",
+        "cost": "12.64",
+        "kilometerOfDisplay": "5023",
+        "date": 1750781270894
+    },
+    {
+        "id": 1751817837267,
+        "type": "charging",
+        "oil": 0,
+        "electric": "18.2",
+        "cost": "12.7",
+        "kilometerOfDisplay": "5186",
+        "date": 1751817771144
+    },
+    {
+        "id": 1752084348321,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.1",
+        "cost": "10.8",
+        "kilometerOfDisplay": "5290",
+        "date": 1752084314016
+    },
+    {
+        "id": 1752335940785,
+        "type": "charging",
+        "oil": 0,
+        "electric": "17.9",
+        "cost": "14.2",
+        "kilometerOfDisplay": "5488",
+        "date": 1752335885511
+    },
+    {
+        "id": 1753532316074,
+        "type": "charging",
+        "oil": 0,
+        "electric": "2.29",
+        "cost": "4.58",
+        "kilometerOfDisplay": "5832",
+        "date": 1753532274158
+    },
+    {
+        "id": 1753582862172,
+        "type": "refueling",
+        "oil": "32.8",
+        "electric": 0,
+        "cost": "184",
+        "kilometerOfDisplay": "5851",
+        "date": 1753582822395
+    },
+    {
+        "id": 1753632535927,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.1",
+        "cost": "8.97",
+        "kilometerOfDisplay": "6078",
+        "date": 1753632472949
+    },
+    {
+        "id": 1754841822394,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.7",
+        "cost": "13.5",
+        "kilometerOfDisplay": "6235",
+        "date": "Fri Aug 08 2025 00:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1754841843290,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.4",
+        "cost": "13.2",
+        "kilometerOfDisplay": "6431",
+        "date": 1754841823280
+    },
+    {
+        "id": 1755706088857,
+        "type": "refueling",
+        "oil": "29.34",
+        "electric": 0,
+        "cost": "189.5",
+        "kilometerOfDisplay": "6455",
+        "date": 1755706025019
+    },
+    {
+        "id": 1756143176598,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.6",
+        "cost": "12.9",
+        "kilometerOfDisplay": "7114",
+        "date": 1756142975538
+    },
+    {
+        "id": 1756656557005,
+        "type": "charging",
+        "oil": 0,
+        "electric": "18.3",
+        "cost": "14.3",
+        "kilometerOfDisplay": "7267",
+        "date": "Sun Aug 31 2025 22:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1757139443272,
+        "type": "refueling",
+        "oil": "14",
+        "electric": 0,
+        "cost": "96.5",
+        "kilometerOfDisplay": "7600",
+        "date": 1757139401697
+    },
+    {
+        "id": 1757163645604,
+        "type": "refueling",
+        "oil": "33.9",
+        "electric": 0,
+        "cost": "201.7",
+        "kilometerOfDisplay": "7626",
+        "date": 1757163277281
+    },
+    {
+        "id": 1757259010778,
+        "type": "charging",
+        "oil": 0,
+        "electric": "10.8",
+        "cost": "7.25",
+        "kilometerOfDisplay": "7958",
+        "date": 1757258984808
+    },
+    {
+        "id": 1757758776023,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16",
+        "cost": "12.12",
+        "kilometerOfDisplay": "8171",
+        "date": 1757758722525
+    },
+    {
+        "id": 1757902484070,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.77",
+        "cost": "12.18",
+        "kilometerOfDisplay": "8201",
+        "date": "Mon Sep 15 2025 00:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1758965487083,
+        "type": "refueling",
+        "oil": "25.46",
+        "electric": 0,
+        "cost": "159.5",
+        "kilometerOfDisplay": "8365",
+        "date": 1758965438270
+    },
+    {
+        "id": 1758989658118,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.5",
+        "cost": "11.96",
+        "kilometerOfDisplay": "8365",
+        "date": "Sun Sep 28 2025 01:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1759360897541,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.86",
+        "cost": "19.32",
+        "kilometerOfDisplay": "8782",
+        "date": 1759360864715
+    },
+    {
+        "id": 1759412543370,
+        "type": "refueling",
+        "oil": "36.3",
+        "electric": 0,
+        "cost": "257",
+        "kilometerOfDisplay": "9132",
+        "date": 1759412498341
+    },
+    {
+        "id": 1759581646935,
+        "type": "charging",
+        "oil": 0,
+        "electric": "5.755",
+        "cost": "9.98",
+        "kilometerOfDisplay": "9444",
+        "date": "Sat Oct 04 2025 08:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1759581786943,
+        "type": "refueling",
+        "oil": "19.92",
+        "electric": 0,
+        "cost": "134",
+        "kilometerOfDisplay": "9844",
+        "date": 1759581671505
+    },
+    {
+        "id": 1759766937124,
+        "type": "charging",
+        "oil": 0,
+        "electric": "17.13",
+        "cost": "12.44",
+        "kilometerOfDisplay": "10057",
+        "date": 1759766879104
+    },
+    {
+        "id": 1760717566573,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.13",
+        "cost": "10.2",
+        "kilometerOfDisplay": "10124",
+        "date": 1760717528508
+    },
+    {
+        "id": 1760931711735,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.1",
+        "cost": "10.9",
+        "kilometerOfDisplay": "10402",
+        "date": "Sun Oct 19 2025 23:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1762015791214,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.96",
+        "cost": "11.56",
+        "kilometerOfDisplay": "10491",
+        "date": 1762015761033
+    },
+    {
+        "id": 1763224794172,
+        "type": "charging",
+        "oil": 0,
+        "electric": "12.8",
+        "cost": "9.6",
+        "kilometerOfDisplay": "10664",
+        "date": 1763224757589
+    },
+    {
+        "id": 1764088268031,
+        "type": "charging",
+        "oil": 0,
+        "electric": "14.96",
+        "cost": "10.8",
+        "kilometerOfDisplay": "10797",
+        "date": 1764088218303
+    },
+    {
+        "id": 1764864519178,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.69",
+        "cost": "5.3",
+        "kilometerOfDisplay": "10848",
+        "date": 1764864348791
+    },
+    {
+        "id": 1765003520192,
+        "type": "refueling",
+        "oil": "29",
+        "electric": 0,
+        "cost": "185.6",
+        "kilometerOfDisplay": "10886",
+        "date": 1765003470262
+    },
+    {
+        "id": 1765210295215,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16.47",
+        "cost": "12",
+        "kilometerOfDisplay": "10919",
+        "date": 1765210263683
+    },
+    {
+        "id": 1765728441170,
+        "type": "charging",
+        "oil": 0,
+        "electric": "15.7",
+        "cost": "1.74",
+        "kilometerOfDisplay": "10972",
+        "date": 1765728408326
+    },
+    {
+        "id": 1767020782323,
+        "type": "refueling",
+        "oil": "29.88",
+        "electric": 0,
+        "cost": "184",
+        "kilometerOfDisplay": "11140",
+        "date": 1767020478868
+    },
+    {
+        "id": 1767025591154,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16",
+        "cost": "10.42",
+        "kilometerOfDisplay": "11145",
+        "date": 1767025549144
+    },
+    {
+        "id": 1767416662757,
+        "type": "refueling",
+        "oil": "25.26",
+        "electric": 0,
+        "cost": "128.18",
+        "kilometerOfDisplay": "11528",
+        "date": 1767416615088
+    },
+    {
+        "id": 1768234804117,
+        "type": "charging",
+        "oil": 0,
+        "electric": "17.4",
+        "cost": "13.1",
+        "kilometerOfDisplay": "11925",
+        "date": 1768234775230
+    },
+    {
+        "id": 1768466617039,
+        "type": "refueling",
+        "oil": "24.93",
+        "electric": 0,
+        "cost": "155",
+        "kilometerOfDisplay": "11930",
+        "date": "Wed Jan 14 2026 16:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1768466707323,
+        "type": "charging",
+        "oil": 0,
+        "electric": "12",
+        "cost": "11.47",
+        "kilometerOfDisplay": "12150",
+        "date": 1768466666068
+    },
+    {
+        "id": 1768466786375,
+        "type": "refueling",
+        "oil": "25.4",
+        "electric": 0,
+        "cost": "119.84",
+        "kilometerOfDisplay": "12400",
+        "date": 1768466736464
+    },
+    {
+        "id": 1768739044057,
+        "type": "refueling",
+        "oil": "23.54",
+        "electric": 0,
+        "cost": "120.41",
+        "kilometerOfDisplay": "12733",
+        "date": "Sun Jan 18 2026 09:00:00 GMT+0800 (中国标准时间)"
+    },
+    {
+        "id": 1768842917620,
+        "type": "charging",
+        "oil": 0,
+        "electric": "16",
+        "cost": "12",
+        "kilometerOfDisplay": "13111",
+        "date": 1768842878221
+    }
+]

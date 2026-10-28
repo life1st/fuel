@@ -16,6 +16,8 @@ interface SyncStore {
   gistConfig: GistConfig | null;
   setGistConfig: (config: GistConfig) => void;
   clearAllConfig: () => void;
+  isOptimizeCost: boolean;
+  setOptimizeCost: (isOptimizeCost: boolean) => void;
 }
 
 const useSettingStore = create<SyncStore>()(
@@ -35,6 +37,10 @@ const useSettingStore = create<SyncStore>()(
       },
       clearAllConfig: () => {
         set({ gistConfig: null });
+      },
+      isOptimizeCost: false,
+      setOptimizeCost: (isOptimizeCost) => {
+        set({ isOptimizeCost });
       },
     }),
     {

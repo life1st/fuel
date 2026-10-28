@@ -1,21 +1,25 @@
 {
   "name": "fuel",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@antv/f2": "^3",
+    "@antv/f2": "^5.14.0",
+    "@antv/f2-react": "^5.14.0",
     "antd-mobile": "^5.39.0",
     "antd-mobile-icons": "^0.3.0",
-    "axios": "^1.8.3",
+    "axios": "^1.13.5",
     "classnames": "^2.5.1",
-    "darkreader": "^4.9.105",
+    "copy-to-clipboard": "^3.3.3",
+    "darkreader": "^4.9.117",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -24,19 +28,26 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-istanbul": "3.0.9",
     "eslint": "^9.22.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
+    "jsdom": "^26.0.0",
+    "puppeteer-core": "^24.4.0",
     "sass": "^1.85.1",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.2.2",
+    "vite": "^6.4.1",
     "vite-bundle-analyzer": "^0.18.0",
-    "vite-plugin-pwa": "^2.0.0"
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^3.0.9"
   },
   "packageManager": "pnpm@10.2.0+sha1.5d36c5a1aae9a628a924ee9982f013ad202e1051"
 }

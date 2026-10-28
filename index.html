@@ -6,12 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
-    <title>Fuel - 能耗统计</title>
-    <meta name="description" content="轻量级车辆加油、充电与能耗估算管理工具" />
+    <title>Fuel - 车辆能耗记账</title>
+    <meta name="description" content="轻量级车辆加油、充电与能耗记录管理工具" />
 
     <!-- PWA & Mobile Meta Tags -->
     <meta name="theme-color" content="#ffffff" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1c1c1e" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#181818" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -20,10 +20,26 @@
     <meta name="format-detection" content="telephone=no" />
 
     <!-- Favicon & Touch Icons -->
-    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
-    <link rel="alternate icon" type="image/png" href="./pwa-192x192.png" />
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="alternate icon" type="image/png" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <script
+      defer
+      src="https://collection.life1st.me/script.js"
+      data-website-id="bb0d06a8-1560-409d-926d-aaedf41c6c4c"
+    ></script>
+    <script>
+      (function () {
+        const themeColor = window.matchMedia('(prefers-color-scheme: dark)').matches ? '#181818' : '#ffffff';
+        document.documentElement.style.backgroundColor = themeColor;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.setAttribute('content', themeColor);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
