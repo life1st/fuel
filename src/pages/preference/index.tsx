@@ -1,17 +1,20 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { List, Modal, Button, TextArea, Toast } from "antd-mobile";
+import { List, Modal, Button, TextArea, Toast, Tag } from "antd-mobile";
+import { AppOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import Navigate from "@/components/navigate";
 import useRecordStore, { Record } from "@/store/recordStore";
 import useSettingStore from "@/store/setting-store";
 import SyncSetting from "@/components/sync-setting";
+import { usePWAInstall } from "@/utils/pwa";
 import "./style.scss";
 
 const Preference: FC = () => {
   const navi = useNavigate();
   const { recordList, setRecordData } = useRecordStore();
   const { vehicleId } = useSettingStore();
+  const { isStandalone, install } = usePWAInstall();
   const [importVisible, setImportVisible] = useState(false);
   const [importText, setImportText] = useState("");
 
@@ -138,7 +141,22 @@ const Preference: FC = () => {
       <Navigate title="偏好设置" />
 
       <div className="preference-content">
-        <List className="preference-section">
+        <List header="应用生态与沉浸体验" className="preference-section">
+          <List.Item
+            prefix={<AppOutline />}
+            onClick={install}
+            extra={isStandalone ? <Tag color="success">已安装</Tag> : <Tag color="primary">添加到主屏幕</Tag>}
+            description={
+              isStandalone
+                ? "已运行在独立全屏模式下，支持秒开与离线记账"
+                : "将应用添加到手机桌面，享有原生 App 级无缝沉浸体验"
+            }
+          >
+            桌面应用安装
+          </List.Item>
+        </List>
+
+        <List header="云同步与数据" className="preference-section">
           <SyncSetting />
           <List.Item onClick={handleExport}>导出数据</List.Item>
           <List.Item

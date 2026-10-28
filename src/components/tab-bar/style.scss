@@ -3,12 +3,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: calc(56px + var(--safe-area-bottom));
+  padding-bottom: var(--safe-area-bottom);
+  box-sizing: border-box;
   background: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 999;
+  user-select: none;
+  -webkit-user-select: none;
 
   .tab-item {
     display: flex;

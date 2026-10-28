@@ -1,6 +1,8 @@
 .preference-container {
-  height: 100vh;
+  min-height: 100vh;
+  box-sizing: border-box;
   background: #f5f5f5;
+  padding-bottom: calc(84px + var(--safe-area-bottom));
 
   .preference-header {
     display: flex;
