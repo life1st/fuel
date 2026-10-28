@@ -1,26 +1,31 @@
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { List, Modal, Button, TextArea, Toast, Switch } from "antd-mobile";
+import { List, Modal, Button, TextArea, Toast, Switch, Tag } from "antd-mobile";
+import { AppOutline } from "antd-mobile-icons";
 import dayjs from "dayjs";
 import Navigate from "@/components/navigate";
 import useRecordStore, { Record } from "@/store/recordStore";
 import useSettingStore from "@/store/setting-store";
 import SyncSetting from "@/components/sync-setting";
-import pkgJson from '@/../package.json'
+import { usePWAInstall } from "@/utils/pwa";
+import pkgJson from "@/../package.json";
 import "./style.scss";
 
 const Preference: FC = () => {
   const navi = useNavigate();
   const { recordList, setRecordData } = useRecordStore();
   const { vehicleId, isOptimizeCost, setOptimizeCost } = useSettingStore();
+  const { isStandalone, install } = usePWAInstall();
   const [importVisible, setImportVisible] = useState(false);
   const [importText, setImportText] = useState("");
 
   const handleExport = () => {
     const data = JSON.stringify(recordList);
-    const lastDate = dayjs(recordList.sort((a, b) =>
-      dayjs(b.date).isAfter(dayjs(a.date)) ? 1 : -1
-    )[0]?.date);
+    const lastDate = dayjs(
+      recordList.sort((a, b) =>
+        dayjs(b.date).isAfter(dayjs(a.date)) ? 1 : -1
+      )[0]?.date
+    );
     const blob = new Blob([data], { type: "application/json;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -142,15 +147,35 @@ const Preference: FC = () => {
       <Navigate title="偏好设置" />
 
       <div className="preference-content">
-        <List className="preference-section">
+        <List header="应用生态与沉浸体验" className="preference-section">
+          <List.Item
+            prefix={<AppOutline />}
+            onClick={install}
+            extra={
+              isStandalone ? (
+                <Tag color="success">已安装</Tag>
+              ) : (
+                <Tag color="primary">添加到主屏幕</Tag>
+              )
+            }
+            description={
+              isStandalone
+                ? "已运行在独立全屏模式下，支持秒开与离线记账"
+                : "将应用添加到手机桌面，享有原生 App 级无缝沉浸体验"
+            }
+          >
+            桌面应用安装
+          </List.Item>
+        </List>
+
+        <List header="云同步与数据" className="preference-section">
           <SyncSetting />
           <List.Item
-            description={isOptimizeCost ? '排除最后一笔加油记录，使平均值更准确' : ''}
+            description={
+              isOptimizeCost ? "排除最后一笔加油记录，使平均值更准确" : ""
+            }
             extra={
-              <Switch
-                checked={isOptimizeCost}
-                onChange={setOptimizeCost}
-              />
+              <Switch checked={isOptimizeCost} onChange={setOptimizeCost} />
             }
           >
             优化费用计算
@@ -171,9 +196,13 @@ const Preference: FC = () => {
       </div>
       <div className="recommend-tools">
         <List className="preference-section">
-          <List.Item onClick={() => {
-            window.open('https://jjz.life1st.me')
-          }}>进京证排期工具</List.Item>
+          <List.Item
+            onClick={() => {
+              window.open("https://jjz.life1st.me");
+            }}
+          >
+            进京证排期工具
+          </List.Item>
         </List>
       </div>
     </div>

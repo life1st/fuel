@@ -76,7 +76,7 @@
     flex-direction: column;
     flex: 1;
     gap: 8px;
-    padding: 20px;
+    padding: 20px 20px calc(24px + var(--safe-area-bottom));
     .record-form {
         display: flex;
         flex-direction: column;

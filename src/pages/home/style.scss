@@ -1,5 +1,13 @@
 .home-container {
-  padding: calc(24px + var(--safe-area-top)) 20px 80px;
+  padding: calc(20px + var(--safe-area-top)) 20px calc(84px + var(--safe-area-bottom));
+  box-sizing: border-box;
+  min-height: 100vh;
+
+  .pwa-install-banner {
+    margin-bottom: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
   
   .section {
     margin-bottom: 32px;
