@@ -6,6 +6,7 @@ import EnergyRecordItem from '@/components/energy-record-item'
 import MonthlyStatisticsItem from '@/components/monthly-statistics-item'
 import YearStatEntry from '@/components/year-stat-entry'
 import Filter from '@/components/filter'
+import SyncIndicator from '@/components/sync-indicator'
 import useRecordStore from '@/store/recordStore'
 import useFilterStore from '@/store/filterStore'
 import { usePWAInstall } from '@/utils/pwa'
@@ -200,7 +201,10 @@ const Home: FC = () => {
       )}
       <section className="section">
         <div className="section-header">
-          <h2>补能统计</h2>
+          <div className="title-area">
+            <h2>补能统计</h2>
+            <SyncIndicator />
+          </div>
           <Filter />
         </div>
         <div className="energy-list">

@@ -1,7 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import syncManager from '@/utils/sync/sync-manager'
 import './styles/main.scss'
 import Router from './router'
+
+// 启动 Gist 静默自动同步调度引擎
+syncManager.initLifecycle()
 
 const applyDarkMode = async () => {
   const { auto, isEnabled } = await import('darkreader')

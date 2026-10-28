@@ -8,6 +8,8 @@ export interface GistConfig {
   gistId: string
 }
 
+export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error' | 'offline';
+
 interface SyncStore {
   vehicleId: string;
   setVehicleId: (id: string) => void;
@@ -18,6 +20,11 @@ interface SyncStore {
   clearAllConfig: () => void;
   isOptimizeCost: boolean;
   setOptimizeCost: (isOptimizeCost: boolean) => void;
+  syncStatus: SyncStatus;
+  lastSyncError: string | null;
+  setSyncStatus: (status: SyncStatus, error?: string | null) => void;
+  pendingChanges: boolean;
+  setPendingChanges: (pending: boolean) => void;
 }
 
 const useSettingStore = create<SyncStore>()(
@@ -42,9 +49,25 @@ const useSettingStore = create<SyncStore>()(
       setOptimizeCost: (isOptimizeCost) => {
         set({ isOptimizeCost });
       },
+      syncStatus: 'idle',
+      lastSyncError: null,
+      setSyncStatus: (status: SyncStatus, error = null) => {
+        set({ syncStatus: status, lastSyncError: error });
+      },
+      pendingChanges: false,
+      setPendingChanges: (pending: boolean) => {
+        set({ pendingChanges: pending });
+      },
     }),
     {
       name: "setting-store",
+      partialize: (state) => ({
+        vehicleId: state.vehicleId,
+        syncTime: state.syncTime,
+        gistConfig: state.gistConfig,
+        isOptimizeCost: state.isOptimizeCost,
+        pendingChanges: state.pendingChanges,
+      }),
     }
   )
 );

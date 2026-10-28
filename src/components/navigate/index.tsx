@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { LeftOutline } from 'antd-mobile-icons'
+import SyncIndicator from '@/components/sync-indicator'
 import './style.scss'
 
 interface NavigateProps {
@@ -29,7 +30,10 @@ const Navigate: FC<NavigateProps> = ({
       <button className="back-button" onClick={handleBack}>
         <LeftOutline />
       </button>
-      <h1>{title}</h1>
+      <div className="navigate-title-wrap">
+        <h1>{title}</h1>
+        <SyncIndicator />
+      </div>
       {right && <div className="right-content">{right}</div>}
     </div>
   )

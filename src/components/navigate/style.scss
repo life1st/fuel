@@ -18,11 +18,17 @@
     justify-content: center;
   }
 
-  h1 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 500;
+  .navigate-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     flex: 1;
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+    }
   }
 
   .right-content {
